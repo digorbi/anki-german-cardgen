@@ -1,6 +1,6 @@
 from aqt import mw
 from aqt.utils import showInfo, showWarning
-from aqt.qt import *
+from aqt.qt import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QAction
 from .model import create_german_model
 import os
 import shutil
@@ -53,6 +53,30 @@ def generate_card():
     layout.addWidget(word_label)
     layout.addWidget(word_input)
     
+    # Deck selection
+    deck_label = QLabel("Select deck:")
+    deck_combo = QComboBox()
+    
+    # Get all decks and populate the combo box
+    decks = mw.col.decks.all()
+    current_deck_id = mw.col.decks.current()['id']
+    current_deck_name = ""
+    
+    for deck in decks:
+        deck_name = deck['name']
+        deck_combo.addItem(deck_name, deck['id'])
+        if deck['id'] == current_deck_id:
+            current_deck_name = deck_name
+    
+    # Set the current deck as default
+    if current_deck_name:
+        index = deck_combo.findText(current_deck_name)
+        if index >= 0:
+            deck_combo.setCurrentIndex(index)
+    
+    layout.addWidget(deck_label)
+    layout.addWidget(deck_combo)
+    
     # Audio file path input
     audio_label = QLabel("Audio file path (optional):")
     audio_input = QLineEdit()
@@ -79,6 +103,7 @@ def generate_card():
         return
     
     word = word_input.text().strip()
+    selected_deck_id = deck_combo.currentData()
     audio_path = audio_input.text().strip()
     
     if not word:
@@ -107,7 +132,8 @@ def generate_card():
     note.fields[5] = f"Translation of example sentence"  # sentence_translation
     note.fields[6] = ""  # note
     
-    mw.col.add_note(note, mw.col.decks.current()['id'])
+    # Add note to the selected deck
+    mw.col.add_note(note, selected_deck_id)
     mw.col.save()
     
     if audio_filename:

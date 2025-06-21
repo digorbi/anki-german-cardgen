@@ -1,7 +1,7 @@
 # Software Requirements
 
 ## POC scope
-- [ ] FR1: Generate simple Anki card using plugin — input text and audio, select deck.
+- [X] FR1: Generate simple Anki card using plugin — input text and audio, select deck.
 - [ ] NFR1: Run project locally without Anki (test logic in CLI or script)
 
 ## MVP Scope
