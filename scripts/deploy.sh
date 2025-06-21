@@ -21,10 +21,10 @@ if [ ! -d "$ANKI_ADDONS_DIR" ]; then
     mkdir -p "$ANKI_ADDONS_DIR"
 fi
 
-# Copy plugin files
+# Copy all plugin files
 echo -e "${YELLOW}Copying plugin files...${NC}"
-cp plugin/__init__.py "$ANKI_ADDONS_DIR/"
-cp plugin/manifest.json "$ANKI_ADDONS_DIR/"
+cp plugin/*.py "$ANKI_ADDONS_DIR/"
+cp plugin/*.json "$ANKI_ADDONS_DIR/"
 
 echo -e "${GREEN}Plugin deployed successfully!${NC}"
 echo -e "${YELLOW}Please restart Anki to load the updated plugin.${NC}" 
