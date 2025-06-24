@@ -65,4 +65,12 @@ def get_card_input_dialog(mw):
     word = word_input.text().strip()
     selected_deck_id = deck_combo.currentData()
     audio_path = audio_input.text().strip()
-    return CardInputResult(word, selected_deck_id, audio_path) 
+    return CardInputResult(word, selected_deck_id, audio_path)
+
+def show_info(message):
+    from aqt.utils import showInfo
+    showInfo(message)
+
+def show_warning(message):
+    from aqt.utils import showWarning
+    showWarning(message) 
