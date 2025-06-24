@@ -1,7 +1,8 @@
 from aqt import mw
 from aqt.utils import showInfo, showWarning
 from aqt.qt import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox, QAction
-from .model import create_german_model
+from .model import GermanCard
+from .anki_adapter import ensure_german_model_exists, german_card_to_anki_note
 import os
 import shutil
 from pathlib import Path
@@ -51,24 +52,33 @@ def generate_card():
     if not word:
         showWarning("Please enter a German word.")
         return
-    # Use the custom German model
-    model = create_german_model()
-    mw.col.models.set_current(model)
-    note = mw.col.new_note(model)
+
+    # Prepare business logic (example sentence, translations, etc. could be generated here)
+    example_sentence = f"Example sentence with {word}"
+    word_translation = f"Translation of {word}"
+    sentence_translation = "Translation of example sentence"
+
     # Handle audio file
     audio_filename = ""
     if audio_path:
         audio_filename = copy_audio_to_media(audio_path)
-        if audio_filename:
-            audio_filename = f"[sound:{audio_filename}]"
-    # Fill in the fields
-    note.fields[0] = "1"  # id
-    note.fields[1] = word  # de_word
-    note.fields[2] = f"Example sentence with {word}"  # de_sentence
-    note.fields[3] = audio_filename  # de_audio
-    note.fields[4] = f"Translation of {word}"  # word_translation
-    note.fields[5] = f"Translation of example sentence"  # sentence_translation
-    note.fields[6] = ""  # note
+
+    # Create pure model
+    card = GermanCard(
+        word=word,
+        example_sentence=example_sentence,
+        audio_filename=audio_filename or "",
+        word_translation=word_translation,
+        sentence_translation=sentence_translation,
+        note=""
+    )
+    if not card.is_valid():
+        showWarning("Invalid card data.")
+        return
+
+    # Ensure Anki model exists and add note
+    model = ensure_german_model_exists(mw)
+    note = german_card_to_anki_note(card, mw, model)
     mw.col.add_note(note, selected_deck_id)
     mw.col.save()
     if audio_filename:
