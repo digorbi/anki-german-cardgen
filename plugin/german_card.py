@@ -25,7 +25,7 @@ class GermanCard:
             return f"[sound:{self.audio_filename}]"
         return ""
 
-    def to_fields_list(self):
+    def to_fields_list(self) -> list:
         return [
             self.card_id,
             self.word,
