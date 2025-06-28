@@ -1,7 +1,14 @@
+import sys
+import os
+# Add the addon directory to Python path so core package can be found
+addon_dir = os.path.dirname(__file__)
+if addon_dir not in sys.path:
+    sys.path.insert(0, addon_dir)
+
 from aqt import mw
 from aqt.qt import QAction
 from .view import get_card_input_dialog, show_info, show_warning
-from .german_card import GermanCard
+from core.german_card import GermanCard
 from .anki_service import AnkiService
 
 def generate_card():

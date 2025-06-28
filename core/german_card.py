@@ -1,4 +1,4 @@
-from .anki_service import AudioCard
+from .audio_card import AudioCard
 
 class GermanCard(AudioCard):
     def __init__(

@@ -19,9 +19,19 @@ echo -e "${YELLOW}Deploying German Card Generator Plugin...${NC}"
 if [ ! -d "$ANKI_ADDONS_DIR" ]; then
     echo -e "${YELLOW}Creating Anki add-ons directory...${NC}"
     mkdir -p "$ANKI_ADDONS_DIR"
+else
+    echo -e "${YELLOW}Cleaning up existing files...${NC}"
+    rm -rf "$ANKI_ADDONS_DIR"/*
 fi
 
-# Copy all plugin files
+# Create core directory in addon
+mkdir -p "$ANKI_ADDONS_DIR/core"
+
+# Copy core files
+echo -e "${YELLOW}Copying core files...${NC}"
+cp core/*.py "$ANKI_ADDONS_DIR/core/"
+
+# Copy plugin files (these go to the root of the addon)
 echo -e "${YELLOW}Copying plugin files...${NC}"
 cp plugin/*.py "$ANKI_ADDONS_DIR/"
 cp plugin/*.json "$ANKI_ADDONS_DIR/"
