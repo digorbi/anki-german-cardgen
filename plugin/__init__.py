@@ -14,10 +14,9 @@ def generate_card():
         show_warning("Invalid card data.")
         return
     
-    # Use AnkiService to handle card creation and audio copying
     anki_service = AnkiService(mw)
     try:
-        note = anki_service.save_card(card, result.selected_deck_id)
+        anki_service.save_card(card, result.selected_deck_id)
         show_info(f"German card created: {card.word}")
     except Exception as e:
         show_warning(f"Failed to create card: {str(e)}")
