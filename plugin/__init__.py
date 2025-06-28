@@ -8,16 +8,12 @@ def generate_card():
     result = get_card_input_dialog(mw)
     if not result:
         return
-
-    print(f"DEBUG: User input - word: '{result.word}', audio_path: '{result.audio_path}'")
-    
+   
     card = GermanCard.create_from_user_input(result)
     if not card.is_valid():
         show_warning("Invalid card data.")
         return
-
-    print(f"DEBUG: Card created - audio_path: '{card.audio_path}', audio_filename: '{card.audio_filename}'")
-
+    
     # Use AnkiService to handle card creation and audio copying
     anki_service = AnkiService(mw)
     try:
