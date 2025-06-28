@@ -1,4 +1,5 @@
 from .audio_card import AudioCard
+import re
 
 class GermanCard(AudioCard):
     def __init__(
@@ -9,10 +10,9 @@ class GermanCard(AudioCard):
         word_translation: str = "",
         sentence_translation: str = "",
         note: str = "",
-        card_id: str = "1",
         audio_path: str = ""
     ):
-        self.card_id = card_id
+        self._id = self._gen_id(word)
         self.word = word
         self.example_sentence = example_sentence
         self.audio_filename = audio_filename
@@ -21,8 +21,25 @@ class GermanCard(AudioCard):
         self.note = note
         self.audio_path = audio_path
 
+    def _gen_id(self, term: str):
+        """Generate ID based on term value by converting to lowercase and replacing spaces with underscores"""
+        # Convert to lowercase and replace spaces with underscores
+        id_base = term.lower().replace(' ', '_')
+        
+        # Handle German umlauts and special characters
+        umlaut_map = {
+            'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss'
+        }
+        
+        # Replace umlauts and special characters
+        for umlaut, replacement in umlaut_map.items():
+            id_base = id_base.replace(umlaut, replacement)
+        
+        # Remove any remaining special characters and keep only alphanumeric and underscores
+        return re.sub(r'[^a-z0-9_]', '', id_base)
+
     def is_valid(self):
-        return bool(self.word)
+        return bool(self._id)
 
     # AudioCard interface implementation
     def get_model_name(self) -> str:
@@ -56,7 +73,7 @@ class GermanCard(AudioCard):
 
     def to_fields_list(self) -> list:
         return [
-            self.card_id,
+            self._id,
             self.word,
             self.example_sentence,
             self.audio_filename,
