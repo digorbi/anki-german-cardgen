@@ -24,7 +24,7 @@ def generate_card():
     anki_service = AnkiService(mw)
     try:
         anki_service.save_card(card, result.selected_deck_id)
-        show_info(f"German card created: {card.word}")
+        show_info(f"German card created: {card.term}")
     except Exception as e:
         show_warning(f"Failed to create card: {str(e)}")
 

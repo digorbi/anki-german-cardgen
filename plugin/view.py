@@ -1,8 +1,8 @@
 from aqt.qt import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox
 
 class CardInputResult:
-    def __init__(self, word, selected_deck_id, audio_path):
-        self.word = word
+    def __init__(self, term, selected_deck_id, audio_path):
+        self.term = term
         self.selected_deck_id = selected_deck_id
         self.audio_path = audio_path
 
@@ -16,11 +16,11 @@ def get_card_input_dialog(mw):
 
     layout = QVBoxLayout()
 
-    # Word input
-    word_label = QLabel("Enter German word:")
-    word_input = QLineEdit()
-    layout.addWidget(word_label)
-    layout.addWidget(word_input)
+    # Term input
+    term_label = QLabel("Enter German term:")
+    term_input = QLineEdit()
+    layout.addWidget(term_label)
+    layout.addWidget(term_input)
 
     # Deck selection
     deck_label = QLabel("Select deck:")
@@ -62,10 +62,10 @@ def get_card_input_dialog(mw):
     if dialog.exec() != QDialog.DialogCode.Accepted:
         return None
 
-    word = word_input.text().strip()
+    term = term_input.text().strip()
     selected_deck_id = deck_combo.currentData()
     audio_path = audio_input.text().strip()
-    return CardInputResult(word, selected_deck_id, audio_path)
+    return CardInputResult(term, selected_deck_id, audio_path)
 
 def show_info(message):
     from aqt.utils import showInfo

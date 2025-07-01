@@ -4,17 +4,17 @@ import re
 class GermanCard(AudioCard):
     def __init__(
         self,
-        word: str,
-        example_sentence: str,
+        term: str,
+        context: str,
         audio_filename: str = "",
         word_translation: str = "",
         sentence_translation: str = "",
         note: str = "",
         audio_path: str = ""
     ):
-        self._id = self._gen_id(word)
-        self.word = word
-        self.example_sentence = example_sentence
+        self._id = self._gen_id(term)
+        self.term = term
+        self.context = context
         self.audio_filename = audio_filename
         self.word_translation = word_translation
         self.sentence_translation = sentence_translation
@@ -74,8 +74,8 @@ class GermanCard(AudioCard):
     def to_fields_list(self) -> list:
         return [
             self._id,
-            self.word,
-            self.example_sentence,
+            self.term,
+            self.context,
             self.audio_filename,
             self.word_translation,
             self.sentence_translation,
@@ -88,12 +88,12 @@ class GermanCard(AudioCard):
         Create a GermanCard from user input, handling business logic.
         Audio file copying is now handled by AnkiService through the AudioCard interface.
         """
-        word = result.word
+        term = result.term
         audio_path = result.audio_path
 
-        # Business logic for generating example sentence and translations
-        example_sentence = f"Example sentence with {word}"
-        word_translation = f"Translation of {word}"
+        # Business logic for generating context and translations
+        context = f"Example sentence with {term}"
+        word_translation = f"Translation of {term}"
         sentence_translation = "Translation of example sentence"
 
         # Extract filename from audio path if provided
@@ -104,8 +104,8 @@ class GermanCard(AudioCard):
             audio_filename = f"[sound:{filename}]"
 
         return cls(
-            word=word,
-            example_sentence=example_sentence,
+            term=term,
+            context=context,
             audio_filename=audio_filename,
             word_translation=word_translation,
             sentence_translation=sentence_translation,
