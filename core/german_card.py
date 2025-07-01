@@ -6,20 +6,16 @@ class GermanCard(AudioCard):
         self,
         term: str,
         context: str,
-        audio_filename: str = "",
-        word_translation: str = "",
-        sentence_translation: str = "",
-        note: str = "",
-        audio_path: str = ""
+        audio_path: str
     ):
         self._id = self._gen_id(term)
         self.term = term
         self.context = context
-        self.audio_filename = audio_filename
-        self.word_translation = word_translation
-        self.sentence_translation = sentence_translation
-        self.note = note
         self.audio_path = audio_path
+        self._audio_filename = self._gen_audio_filename(audio_path)
+        self.sentence = ""
+        self.term_translation = ""
+        self.sentence_translation = ""
 
     def _gen_id(self, term: str):
         """Generate ID based on term value by converting to lowercase and replacing spaces with underscores"""
@@ -38,34 +34,43 @@ class GermanCard(AudioCard):
         # Remove any remaining special characters and keep only alphanumeric and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
 
+    def _gen_audio_filename(self, audio_path: str) -> str:
+        if audio_path:
+            import os
+            filename = os.path.basename(audio_path)
+            audio_filename = f"[sound:{filename}]"
+        else:
+            audio_filename = ""
+        return audio_filename
+
     def is_valid(self):
         return bool(self._id)
 
     # AudioCard interface implementation
     def get_model_name(self) -> str:
-        return "GermanCardModel"
+        return "German Contextual Vocab"
 
     def get_model_fields_names(self) -> list:
-        return ["id", "de_word", "de_sentence", "de_audio", "word_translation", "sentence_translation", "note"]
+        return ["id", "term", "sentence", "sentence_audio", "term_translation", "sentence_translation", "context"]
 
     def get_template_name(self) -> str:
-        return "German → English"
+        return "Contextual Audio Card"
 
     def get_qfmt_template(self) -> str:
         return """
-<div class="german-word">{{de_word}}</div>
-<div class="german-sentence">{{de_sentence}}</div>
-{{de_audio}}
+<div class="term">{{term}}</div>
+<div class="sentence">{{sentence}}</div>
+{{sentence_audio}}
 """
 
     def get_afmt_template(self) -> str:
         return """
-<div class="german-word">{{de_word}}</div>
-<div class="word-translation">{{word_translation}}</div>
-<div class="german-sentence">{{de_sentence}}</div>
+<div class="term">{{term}}</div>
+<div class="term-translation">{{term_translation}}</div>
+<div class="sentence">{{sentence}}</div>
 <div class="sentence-translation">{{sentence_translation}}</div>
-{{de_audio}}
-<div class="notes">{{note}}</div>
+{{sentence_audio}}
+<div class="context">{{context}}</div>
 """
 
     def get_audio_path(self) -> str:
@@ -75,40 +80,17 @@ class GermanCard(AudioCard):
         return [
             self._id,
             self.term,
-            self.context,
-            self.audio_filename,
-            self.word_translation,
+            self.sentence,
+            self._audio_filename,
+            self.term_translation,
             self.sentence_translation,
-            self.note
+            self.context
         ]
 
     @classmethod
-    def create_from_user_input(cls, result):
-        """
-        Create a GermanCard from user input, handling business logic.
-        Audio file copying is now handled by AnkiService through the AudioCard interface.
-        """
-        term = result.term
-        audio_path = result.audio_path
-
-        # Business logic for generating context and translations
-        context = f"Example sentence with {term}"
-        word_translation = f"Translation of {term}"
-        sentence_translation = "Translation of example sentence"
-
-        # Extract filename from audio path if provided
-        audio_filename = ""
-        if audio_path:
-            import os
-            filename = os.path.basename(audio_path)
-            audio_filename = f"[sound:{filename}]"
-
-        return cls(
-            term=term,
-            context=context,
-            audio_filename=audio_filename,
-            word_translation=word_translation,
-            sentence_translation=sentence_translation,
-            note="",
-            audio_path=audio_path or ""
-        ) 
+    def create_from_user_input(cls, term, audio_path):
+        card = cls(term, "Example context for {term}", audio_path)
+        card.sentence = "Example sentence with {term}"
+        card.term_translation = "Translation of {term}"
+        card.sentence_translation = "Translation of example sentence with {term}"
+        return card

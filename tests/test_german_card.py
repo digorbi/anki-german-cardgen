@@ -8,17 +8,16 @@ def test_german_card_creation():
     card = GermanCard(
         term="Haus",
         context="Das Haus ist groß.",
-        word_translation="house",
-        sentence_translation="The house is big."
+        audio_path="test.mp3"
     )
     
     assert card.term == "Haus"
     assert card.context == "Das Haus ist groß."
-    assert card.word_translation == "house"
+    assert card._audio_filename == "[sound:test.mp3]"
     assert card.is_valid() == True
 
 def test_german_card_invalid():
-    card = GermanCard(term="", context="Test")
+    card = GermanCard(term="", context="Test", audio_path="")
     assert card.is_valid() == False
 
 def test_gen_id():
@@ -66,7 +65,7 @@ def test_gen_id():
     ]
     
     for term, expected_id in test_cases:
-        card = GermanCard(term=term, context="Test")
+        card = GermanCard(term=term, context="Test", audio_path="")
         assert card._id == expected_id, f"Failed for term: '{term}', expected: '{expected_id}', got: '{card._id}'"
 
 if __name__ == "__main__":

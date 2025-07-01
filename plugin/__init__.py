@@ -16,7 +16,7 @@ def generate_card():
     if not result:
         return
    
-    card = GermanCard.create_from_user_input(result)
+    card = GermanCard.create_from_user_input(result.term, result.audio_path)
     if not card.is_valid():
         show_warning("Invalid card data.")
         return
