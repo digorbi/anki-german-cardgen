@@ -16,6 +16,8 @@ def generate_card():
     if not result:
         return
    
+    # TODO: create vocab provider and pass it to the card.
+
     card = GermanCard.create_from_user_input(result.term, result.audio_path)
     if not card.is_valid():
         show_warning("Invalid card data.")
