@@ -68,6 +68,14 @@ def test_gen_id():
         card = GermanCard(term=term, context="Test", audio_path="")
         assert card._id == expected_id, f"Failed for term: '{term}', expected: '{expected_id}', got: '{card._id}'"
 
+def test_create_from_user_input():
+    card = GermanCard.create_from_user_input("Hund", "bark.mp3")
+    assert card.term == "Hund"
+    assert card.context == "Example context for Hund"
+    assert card.sentence == "Example sentence with Hund"
+    assert card.term_translation == "Translation of Hund"
+    assert card.sentence_translation == "Translation of example sentence with Hund"
+
 if __name__ == "__main__":
     test_german_card_creation()
     test_german_card_invalid()

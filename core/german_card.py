@@ -89,8 +89,8 @@ class GermanCard(AudioCard):
 
     @classmethod
     def create_from_user_input(cls, term, audio_path):
-        card = cls(term, "Example context for {term}", audio_path)
-        card.sentence = "Example sentence with {term}"
-        card.term_translation = "Translation of {term}"
-        card.sentence_translation = "Translation of example sentence with {term}"
+        card = cls(term, f"Example context for {term}", audio_path)
+        card.sentence = f"Example sentence with {term}"
+        card.term_translation = f"Translation of {term}"
+        card.sentence_translation = f"Translation of example sentence with {term}"
         return card
