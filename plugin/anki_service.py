@@ -48,7 +48,7 @@ class AnkiService:
 
     def save_card(self, card: AudioCard, deck_id):
         """
-        Save a AudioCard to Anki in the specified deck.
+        Save an AudioCard to Anki in the specified deck.
         """
         model = self._ensure_model_exists(card)
         note = self.mw.col.new_note(model)
