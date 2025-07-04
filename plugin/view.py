@@ -73,4 +73,4 @@ def show_info(message):
 
 def show_warning(message):
     from aqt.utils import showWarning
-    showWarning(message) 
+    showWarning(message)

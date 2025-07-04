@@ -9,20 +9,25 @@ from aqt import mw
 from aqt.qt import QAction
 from .view import get_card_input_dialog, show_info, show_warning
 from core.german_card import GermanCard
+from core.openai_vocab_provider import OpenaiVocabProvider
 from .anki_service import AnkiService
 
 def generate_card():
     result = get_card_input_dialog(mw)
     if not result:
         return
-   
-    # TODO: create vocab provider and pass it to the card.
 
-    card = GermanCard.create_from_user_input(result.term, result.audio_path)
+    api_key = os.environ.get("OPENAI_API_KEY")
+    target_language = os.environ.get("TARGET_LANGUAGE", "English")
+    vocab_provider = OpenaiVocabProvider(api_key, target_language)
+
+    card = GermanCard.create_from_user_input(
+        result.term, "", result.audio_path, vocab_provider
+    )
     if not card.is_valid():
         show_warning("Invalid card data.")
         return
-    
+
     anki_service = AnkiService(mw)
     try:
         anki_service.save_card(card, result.selected_deck_id)
@@ -32,4 +37,4 @@ def generate_card():
 
 action = QAction("German Card", mw)
 action.triggered.connect(generate_card)
-mw.form.menuTools.addAction(action) 
+mw.form.menuTools.addAction(action)
