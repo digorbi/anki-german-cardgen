@@ -1,4 +1,5 @@
 from .audio_card import AudioCard
+from .vocab_provider import VocabProvider
 import re
 
 class GermanCard(AudioCard):
@@ -88,11 +89,19 @@ class GermanCard(AudioCard):
         ]
 
     @classmethod
-    def create_from_user_input(cls, term, context, audio_path, vocab_provider):
-        # TODO: use vocab provider to generate card
+    def create_from_user_input(
+        cls,
+        term: str,
+        context: str,
+        audio_path: str,
+        vocab_provider: VocabProvider,
+    ):
+        """Create a card using vocabulary data from ``vocab_provider``."""
 
-        card = cls(term, f"Example context for {term}", audio_path)
-        card.sentence = f"Example sentence with {term}"
-        card.term_translation = f"Translation of {term}"
-        card.sentence_translation = f"Translation of example sentence with {term}"
+        data = vocab_provider.get_vocab(term, context)
+
+        card = cls(data.term, context, audio_path)
+        card.sentence = data.sentence
+        card.term_translation = data.term_translation
+        card.sentence_translation = data.sentence_translation
         return card

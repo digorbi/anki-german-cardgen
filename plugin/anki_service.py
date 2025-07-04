@@ -60,4 +60,4 @@ class AnkiService:
         self.mw.col.add_note(note, deck_id)
         self.mw.col.save()
         self._copy_audio_to_media(card)
-        return note 
+        return note
