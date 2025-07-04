@@ -9,6 +9,7 @@ from aqt import mw
 from aqt.qt import QAction
 from .view import get_card_input_dialog, show_info, show_warning
 from core.german_card import GermanCard
+from core.vocab_provider import VocabProvider
 from .anki_service import AnkiService
 
 def generate_card():
@@ -16,9 +17,13 @@ def generate_card():
     if not result:
         return
    
-    # TODO: create vocab provider and pass it to the card.
+    api_key = os.environ.get("OPENAI_API_KEY")
+    target_language = os.environ.get("TARGET_LANGUAGE", "English")
+    vocab_provider = VocabProvider(api_key, target_language)
 
-    card = GermanCard.create_from_user_input(result.term, result.audio_path)
+    card = GermanCard.create_from_user_input(
+        result.term, "", result.audio_path, vocab_provider
+    )
     if not card.is_valid():
         show_warning("Invalid card data.")
         return

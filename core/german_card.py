@@ -88,11 +88,15 @@ class GermanCard(AudioCard):
         ]
 
     @classmethod
-    def create_from_user_input(cls, term, context, audio_path, vocab_provider):
-        # TODO: use vocab provider to generate card
+    def create_from_user_input(
+        cls, term: str, context: str, audio_path: str, vocab_provider
+    ):
+        """Create a card using vocabulary data from ``vocab_provider``."""
 
-        card = cls(term, f"Example context for {term}", audio_path)
-        card.sentence = f"Example sentence with {term}"
-        card.term_translation = f"Translation of {term}"
-        card.sentence_translation = f"Translation of example sentence with {term}"
+        data = vocab_provider.get_vocab(term, context)
+
+        card = cls(data.get("term", term), context, audio_path)
+        card.sentence = data.get("sentence", "")
+        card.term_translation = data.get("term_translation", "")
+        card.sentence_translation = data.get("sentence_translation", "")
         return card
