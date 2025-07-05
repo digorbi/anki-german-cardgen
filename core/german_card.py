@@ -1,6 +1,9 @@
+from turtle import st
 from .audio_card import AudioCard
 from .vocab_provider import VocabProvider
+from .audio_provider import AudioProvider
 import re
+from typing import Optional
 
 class GermanCard(AudioCard):
     def __init__(
@@ -14,6 +17,8 @@ class GermanCard(AudioCard):
         self.context = context
         self.audio_path = audio_path
         self._audio_filename = self._gen_audio_filename(audio_path)
+        self._audio_data = None
+        self._audio_filename2 = ""
         self.sentence = ""
         self.term_translation = ""
         self.sentence_translation = ""
@@ -88,6 +93,12 @@ class GermanCard(AudioCard):
             self.context
         ]
 
+    def get_audio_data(self) -> Optional[bytes]:
+        return self._audio_data
+
+    def get_fmt_audio_filename(self) -> str:
+        return f"[sound:{self._audio_filename2}]"
+
     @classmethod
     def create_from_user_input(
         cls,
@@ -95,12 +106,14 @@ class GermanCard(AudioCard):
         context: str,
         audio_path: str,
         vocab_provider: VocabProvider,
+        audio_provider: AudioProvider
     ):
         """Create a card using vocabulary data from ``vocab_provider``."""
 
         data = vocab_provider.get_vocab(term, context)
 
         card = cls(data.term, context, audio_path)
+        card._audio_data = audio_provider.get_audio(data.sentence)
         card.sentence = data.sentence
         card.term_translation = data.term_translation
         card.sentence_translation = data.sentence_translation

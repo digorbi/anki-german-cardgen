@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from typing import Optional
 
 class AudioCard(ABC):
     @abstractmethod
@@ -28,3 +29,11 @@ class AudioCard(ABC):
     @abstractmethod
     def to_fields_list(self) -> list:
         pass 
+
+    @abstractmethod
+    def get_audio_data(self) -> Optional[bytes]:
+        pass
+
+    @abstractmethod
+    def get_fmt_audio_filename(self) -> str:
+        pass
