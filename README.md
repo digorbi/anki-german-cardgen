@@ -48,15 +48,29 @@ Handles all Anki-specific functionality including the user interface, plugin lif
 
 ### Setup
 ```bash
-# 1. Install dependencies in your dev environment
+# 1. Create a virtual environment (Python version is set by .python-version if using pyenv)
+python -m venv .venv
+
+# 2. Activate the virtual environment
+source .venv/bin/activate   # On macOS/Linux
+# .venv\\Scripts\\activate  # On Windows
+
+# 3. Install production dependencies
 pip install -r requirements.txt
 
-# 2. Bundle dependencies into vendor folder for deployment
-python scripts/bundle.py
+# 4. (For development) Install dev dependencies
+pip install -r requirements-dev.txt
 ....
 ```
 
 ### Manual Testing
+Bundle dependencies into vendor folder for deployment
+
+```bash
+# be aware of the correct python version
+python scripts/bundle.py
+```
+
 Copy the `plugin/` directory to your Anki plugins folder. The `core` folder has to be copied inside. 
 Use the following automation:
 
