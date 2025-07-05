@@ -46,6 +46,16 @@ Handles all Anki-specific functionality including the user interface, plugin lif
 - Anki Desktop 2.1+
 - Virtual environment (recommended)
 
+### Setup
+```bash
+# 1. Install dependencies in your dev environment
+pip install -r requirements.txt
+
+# 2. Bundle dependencies into vendor folder for deployment
+python scripts/bundle.py
+....
+```
+
 ### Manual Testing
 Copy the `plugin/` directory to your Anki plugins folder. The `core` folder has to be copied inside. 
 Use the following automation:
@@ -66,6 +76,17 @@ The project uses pytest for testing. To run the test suite:
 pytest
 ```
 
+### 🔧 Troubleshooting
+
+#### OpenAI API Quota Issues
+If integration tests fail with Error code: 429 - "quota exceeded" error: you need to top up your balance at [OpenAI Platform](https://platform.openai.com/). Tests cost pennies.
+
+#### Plugin Not Appearing in Anki
+- Restart Anki after deployment
+- Check Tools → German Card Generator menu
+
+#### Plugin Carashes in Anki with an error `The 'openai' package is missing. Please ensure the addon was bundled correctly.`
+Install dependencies into the `plugin/vendor` folder using: `./scripts/bundle.py`
 ---
 
 **Note**: This project is currently in active development. The plugin may not be fully functional for all features listed in the requirements.

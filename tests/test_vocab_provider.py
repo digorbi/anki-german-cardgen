@@ -6,7 +6,7 @@ from core.openai_vocab_provider import OpenaiVocabProvider
 from core.vocab_provider import VocabItem
 
 
-class FakeChatCompletion:
+class FakeCompletions:
     def __init__(self, content):
         self.content = content
         self.last_args = None
@@ -30,10 +30,15 @@ class FakeChatCompletion:
         return _Response(self.content)
 
 
+class FakeChat:
+    def __init__(self, content):
+        self.completions = FakeCompletions(content)
+
+
 class FakeOpenAI:
     def __init__(self, content):
-        self.ChatCompletion = FakeChatCompletion(content)
         self.api_key = None
+        self.chat = FakeChat(content)
 
 
 def test_get_vocab():
@@ -44,7 +49,7 @@ def test_get_vocab():
 
     assert isinstance(data, VocabItem)
     assert data.term == "der Hund"
-    assert fake_client.ChatCompletion.last_args is not None
-    system_msg = fake_client.ChatCompletion.last_args["messages"][0]["content"]
+    assert fake_client.chat.completions.last_args is not None
+    system_msg = fake_client.chat.completions.last_args["messages"][0]["content"]
     assert "English" in system_msg
 

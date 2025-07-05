@@ -22,9 +22,26 @@ class OpenaiVocabProvider(VocabProvider):
         openai_client: Optional[Any] = None,
     ) -> None:
         if openai_client is None:
-            import openai  # type: ignore
-
-            self._openai = openai
+            # Try to import from bundled vendor directory first
+            # This ensures the addon works without requiring users to install dependencies
+            # The vendor directory contains pre-bundled packages (openai, requests, etc.)
+            # that are included with the addon distribution
+            try:
+                import sys
+                
+                # Get the addon directory (plugin/__init__.py is the entry point)
+                addon_dir = os.path.dirname(os.path.dirname(__file__))
+                vendor_dir = os.path.join(addon_dir, "vendor")
+                
+                if os.path.exists(vendor_dir) and vendor_dir not in sys.path:
+                    sys.path.insert(0, vendor_dir)
+                
+                import openai  # type: ignore
+                self._openai = openai
+            except ImportError:
+                raise ImportError(
+                    "The 'openai' package is missing. Please ensure the addon was bundled correctly."
+                )
         else:
             self._openai = openai_client
 
@@ -58,7 +75,7 @@ class OpenaiVocabProvider(VocabProvider):
             term=term, target_language=self.target_language, context=context
         )
 
-        response = self._openai.ChatCompletion.create(
+        response = self._openai.chat.completions.create(
             model=self.model,
             messages=[
                 {"role": "system", "content": system_msg},
@@ -68,7 +85,9 @@ class OpenaiVocabProvider(VocabProvider):
             temperature=0.7,
         )
 
-        content = response.choices[0].message.content  # type: ignore[index]
+        content = response.choices[0].message.content
+        if content is None:
+            raise ValueError("OpenAI returned empty response")
         data = json.loads(content)
         return VocabItem(
             term=data.get("term", term),

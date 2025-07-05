@@ -36,5 +36,11 @@ echo -e "${YELLOW}Copying plugin files...${NC}"
 cp plugin/*.py "$ANKI_ADDONS_DIR/"
 cp plugin/*.json "$ANKI_ADDONS_DIR/"
 
+# Copy vendor directory if it exists (bundled dependencies)
+if [ -d "plugin/vendor" ]; then
+    echo -e "${YELLOW}Copying bundled dependencies...${NC}"
+    cp -r plugin/vendor "$ANKI_ADDONS_DIR/"
+fi
+
 echo -e "${GREEN}Plugin deployed successfully!${NC}"
 echo -e "${YELLOW}Please restart Anki to load the updated plugin.${NC}" 

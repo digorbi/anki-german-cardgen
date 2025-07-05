@@ -34,13 +34,13 @@ def ensure_settings():
     return api_key, target_language
 
 def generate_card():
-    result = get_card_input_dialog(mw)
-    if not result:
-        return
-
     api_key, target_language = ensure_settings()
     if not api_key or not target_language:
         show_warning("OpenAI configuration required to generate card.")
+        return    
+    
+    result = get_card_input_dialog(mw)
+    if not result:
         return
 
     vocab_provider = OpenaiVocabProvider(api_key, target_language)
@@ -62,6 +62,3 @@ def generate_card():
 action = QAction("German Card", mw)
 action.triggered.connect(generate_card)
 mw.form.menuTools.addAction(action)
-
-# Prompt for configuration when the add-on loads
-ensure_settings()
