@@ -23,12 +23,8 @@ class AudioCard(ABC):
         pass
 
     @abstractmethod
-    def get_audio_path(self) -> str:
-        pass
-
-    @abstractmethod
     def to_fields_list(self) -> list:
-        pass 
+        pass
 
     @abstractmethod
     def get_audio_data(self) -> Optional[bytes]:

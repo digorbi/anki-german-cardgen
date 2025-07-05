@@ -48,7 +48,7 @@ def generate_card():
     audio_provider = GttsAudioProvider("de")
 
     card = GermanCard.create_from_user_input(
-        result.term, "", result.audio_path, vocab_provider, audio_provider
+        result.term, "", vocab_provider, audio_provider
     )
     if not card.is_valid():
         show_warning("Invalid card data.")

@@ -9,10 +9,9 @@ from aqt.qt import (
 )
 
 class CardInputResult:
-    def __init__(self, term, selected_deck_id, audio_path):
+    def __init__(self, term, selected_deck_id):
         self.term = term
         self.selected_deck_id = selected_deck_id
-        self.audio_path = audio_path
 
 
 def get_api_settings_dialog(mw, api_key: str, target_language: str):
@@ -81,12 +80,6 @@ def get_card_input_dialog(mw):
     layout.addWidget(deck_label)
     layout.addWidget(deck_combo)
 
-    # Audio file path input
-    audio_label = QLabel("Audio file path (optional):")
-    audio_input = QLineEdit()
-    audio_input.setPlaceholderText("e.g., /path/to/audio.mp3")
-    layout.addWidget(audio_label)
-    layout.addWidget(audio_input)
 
     # Buttons
     button_layout = QHBoxLayout()
@@ -105,8 +98,7 @@ def get_card_input_dialog(mw):
 
     term = term_input.text().strip()
     selected_deck_id = deck_combo.currentData()
-    audio_path = audio_input.text().strip()
-    return CardInputResult(term, selected_deck_id, audio_path)
+    return CardInputResult(term, selected_deck_id)
 
 def show_info(message):
     from aqt.utils import showInfo
