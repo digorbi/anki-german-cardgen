@@ -35,5 +35,5 @@ class AudioCard(ABC):
         pass
 
     @abstractmethod
-    def get_fmt_audio_filename(self) -> str:
+    def get_audio_filename(self) -> str:
         pass

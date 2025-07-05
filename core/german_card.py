@@ -84,11 +84,16 @@ class GermanCard(AudioCard):
         return self.audio_path
 
     def to_fields_list(self) -> list:
+        if self._audio_filename2:
+            audio_field = f"[sound:{self._audio_filename2}]"
+        else:
+            audio_field = self._audio_filename
+
         return [
             self._id,
             self.term,
             self.sentence,
-            self._audio_filename,
+            audio_field,
             self.term_translation,
             self.sentence_translation,
             self.context
@@ -97,8 +102,8 @@ class GermanCard(AudioCard):
     def get_audio_data(self) -> Optional[bytes]:
         return self._audio_data
 
-    def get_fmt_audio_filename(self) -> str:
-        return f"[sound:{self._audio_filename2}]"
+    def get_audio_filename(self) -> str:
+        return self._audio_filename2
 
     @classmethod
     def create_from_user_input(
@@ -120,6 +125,7 @@ class GermanCard(AudioCard):
         if audio_provider is None:
             card._audio_data = None
         else:
-            card._audio_data = audio_provider.get_audio(data.sentence)
+            card._audio_data = audio_provider.get_audio(card.sentence)
+            card._audio_filename2 = audio_provider.get_file_name(card._id)
 
         return card

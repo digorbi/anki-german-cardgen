@@ -9,8 +9,6 @@ class AudioProvider(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def get_provider_name(self) -> str:
-        """Return provider short provider name that can be used in the filename as a prefix."""
+    def get_file_name(self, base: str) -> str:
+        """Returns the filename with the provider identifier and respected file format. Uses the base argument to ensure filename uniqueness."""
         raise NotImplementedError
-
-
