@@ -1,3 +1,4 @@
+from tkinter.constants import N
 from turtle import st
 from .audio_card import AudioCard
 from .vocab_provider import VocabProvider
@@ -106,15 +107,19 @@ class GermanCard(AudioCard):
         context: str,
         audio_path: str,
         vocab_provider: VocabProvider,
-        audio_provider: AudioProvider
+        audio_provider: Optional[AudioProvider] = None,
     ):
         """Create a card using vocabulary data from ``vocab_provider``."""
 
         data = vocab_provider.get_vocab(term, context)
-
         card = cls(data.term, context, audio_path)
-        card._audio_data = audio_provider.get_audio(data.sentence)
         card.sentence = data.sentence
         card.term_translation = data.term_translation
         card.sentence_translation = data.sentence_translation
+
+        if audio_provider is None:
+            card._audio_data = None
+        else:
+            card._audio_data = audio_provider.get_audio(data.sentence)
+
         return card
