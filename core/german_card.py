@@ -1,5 +1,3 @@
-from tkinter.constants import N
-from turtle import st
 from .audio_card import AudioCard
 from .vocab_provider import VocabProvider
 from .audio_provider import AudioProvider
