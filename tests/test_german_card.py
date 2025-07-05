@@ -18,17 +18,16 @@ class DummyProvider(VocabProvider):
 def test_german_card_creation():
     card = GermanCard(
         term="Haus",
-        context="Das Haus ist groß.",
-        audio_path="test.mp3"
+        context="Das Haus ist groß."
     )
 
     assert card.term == "Haus"
     assert card.context == "Das Haus ist groß."
-    assert card._audio_filename == "[sound:test.mp3]"
+    assert card.get_audio_filename() == ""
     assert card.is_valid() == True
 
 def test_german_card_invalid():
-    card = GermanCard(term="", context="Test", audio_path="")
+    card = GermanCard(term="", context="Test")
     assert card.is_valid() == False
 
 def test_gen_id():
@@ -76,12 +75,12 @@ def test_gen_id():
     ]
 
     for term, expected_id in test_cases:
-        card = GermanCard(term=term, context="Test", audio_path="")
+        card = GermanCard(term=term, context="Test")
         assert card._id == expected_id, f"Failed for term: '{term}', expected: '{expected_id}', got: '{card._id}'"
 
 def test_create_from_user_input():
     card = GermanCard.create_from_user_input(
-        "Hund", "", "bark.mp3", DummyProvider()
+        "Hund", "", DummyProvider()
     )
     assert card.term == "Hund"
     assert card.context == ""

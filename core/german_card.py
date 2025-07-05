@@ -9,15 +9,12 @@ class GermanCard(AudioCard):
         self,
         term: str,
         context: str,
-        audio_path: str
     ):
         self._id = self._gen_id(term)
         self.term = term
         self.context = context
-        self.audio_path = audio_path
-        self._audio_filename = self._gen_audio_filename(audio_path)
         self._audio_data = None
-        self._audio_filename2 = ""
+        self._audio_filename = ""
         self.sentence = ""
         self.term_translation = ""
         self.sentence_translation = ""
@@ -38,15 +35,6 @@ class GermanCard(AudioCard):
         
         # Remove any remaining special characters and keep only alphanumeric and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
-
-    def _gen_audio_filename(self, audio_path: str) -> str:
-        if audio_path:
-            import os
-            filename = os.path.basename(audio_path)
-            audio_filename = f"[sound:{filename}]"
-        else:
-            audio_filename = ""
-        return audio_filename
 
     def is_valid(self):
         return bool(self._id)
@@ -78,14 +66,11 @@ class GermanCard(AudioCard):
 <div class="context">{{context}}</div>
 """
 
-    def get_audio_path(self) -> str:
-        return self.audio_path
-
     def to_fields_list(self) -> list:
-        if self._audio_filename2:
-            audio_field = f"[sound:{self._audio_filename2}]"
+        if self._audio_filename:
+            audio_field = f"[sound:{self._audio_filename}]"
         else:
-            audio_field = self._audio_filename
+            audio_field = ""
 
         return [
             self._id,
@@ -101,21 +86,20 @@ class GermanCard(AudioCard):
         return self._audio_data
 
     def get_audio_filename(self) -> str:
-        return self._audio_filename2
+        return self._audio_filename
 
     @classmethod
     def create_from_user_input(
         cls,
         term: str,
         context: str,
-        audio_path: str,
         vocab_provider: VocabProvider,
         audio_provider: Optional[AudioProvider] = None,
     ):
         """Create a card using vocabulary data from ``vocab_provider``."""
 
         data = vocab_provider.get_vocab(term, context)
-        card = cls(data.term, context, audio_path)
+        card = cls(data.term, context)
         card.sentence = data.sentence
         card.term_translation = data.term_translation
         card.sentence_translation = data.sentence_translation
@@ -124,6 +108,7 @@ class GermanCard(AudioCard):
             card._audio_data = None
         else:
             card._audio_data = audio_provider.get_audio(card.sentence)
-            card._audio_filename2 = audio_provider.get_file_name(card._id)
+            card._audio_filename = audio_provider.get_file_name(card._id)
 
         return card
+

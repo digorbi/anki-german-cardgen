@@ -44,7 +44,6 @@ def test_german_card_openai_integration():
     # Test parameters
     test_term = "Haus"
     test_context = "A1 level German"
-    test_audio_path = "test_audio.mp3"
     
     try:
         # Create real OpenAI vocab provider with explicit OpenAI client
@@ -58,7 +57,6 @@ def test_german_card_openai_integration():
         card = GermanCard.create_from_user_input(
             term=test_term,
             context=test_context,
-            audio_path=test_audio_path,
             vocab_provider=vocab_provider
         )
         
@@ -92,7 +90,6 @@ def test_gtts_audio_provider_integration():
     card = GermanCard.create_from_user_input(
         term="Haus",
         context="",
-        audio_path="",
         vocab_provider=DummyProvider(),
         audio_provider=GttsAudioProvider("de", gtts_factory=gTTS),
     )

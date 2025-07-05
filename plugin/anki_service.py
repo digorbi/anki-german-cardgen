@@ -48,20 +48,10 @@ class AnkiService:
         Returns the filename used in the media directory, or None if no audio or copy failed.
         """
         audio_data = card.get_audio_data()
-        if audio_data is not None:
-            return self._save_audio_data_to_media(audio_data, card.get_audio_filename())
+        if audio_data is None:
+            return None
 
-        audio_path = card.get_audio_path()
-        if not audio_path or not os.path.exists(audio_path):
-            return None
-        filename = os.path.basename(audio_path)
-        media_dir = self.mw.col.media.dir()
-        destination = os.path.join(media_dir, filename)
-        try:
-            shutil.copy2(audio_path, destination)
-            return filename
-        except Exception:
-            return None
+        return self._save_audio_data_to_media(audio_data, card.get_audio_filename())
 
     def save_card(self, card: AudioCard, deck_id):
         """
