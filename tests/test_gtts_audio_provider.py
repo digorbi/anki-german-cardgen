@@ -25,7 +25,7 @@ class _FakeGttsFactory:
 
 def test_get_audio_and_filename():
     factory = _FakeGttsFactory()
-    provider = GttsAudioProvider(lang="de", gtts_factory=factory)
+    provider = GttsAudioProvider("de", gtts_factory=factory)
 
     data = provider.get_audio("Hallo")
 

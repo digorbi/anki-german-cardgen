@@ -15,6 +15,7 @@ from .view import (
 )
 from core.german_card import GermanCard
 from core.openai_vocab_provider import OpenaiVocabProvider
+from core.gtts_audio_provider import GttsAudioProvider
 from .anki_service import AnkiService
 
 
@@ -44,9 +45,10 @@ def generate_card():
         return
 
     vocab_provider = OpenaiVocabProvider(api_key, target_language)
+    audio_provider = GttsAudioProvider("de")
 
     card = GermanCard.create_from_user_input(
-        result.term, "", result.audio_path, vocab_provider
+        result.term, "", result.audio_path, vocab_provider, audio_provider
     )
     if not card.is_valid():
         show_warning("Invalid card data.")

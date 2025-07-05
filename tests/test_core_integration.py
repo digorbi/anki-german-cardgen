@@ -87,12 +87,14 @@ def test_gtts_audio_provider_integration():
     if os.getenv("GTTS_ENABLED") != "true":
         pytest.skip("GTTS_ENABLED environment variable not set to 'true' - skipping integration test")
 
+    from gtts import gTTS
+
     card = GermanCard.create_from_user_input(
         term="Haus",
         context="",
         audio_path="",
         vocab_provider=DummyProvider(),
-        audio_provider=GttsAudioProvider(),
+        audio_provider=GttsAudioProvider("de", gtts_factory=gTTS),
     )
 
     assert card.get_audio_data() is not None

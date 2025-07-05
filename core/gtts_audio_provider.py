@@ -12,7 +12,7 @@ from .audio_provider import AudioProvider
 class GttsAudioProvider(AudioProvider):
     """Retrieve audio data using the gTTS library."""
 
-    def __init__(self, lang: str = "de", *, gtts_factory: Optional[Any] = None) -> None:
+    def __init__(self, lang, *, gtts_factory: Optional[Any] = None) -> None:
         if gtts_factory is None:
             # Try to import from bundled vendor directory first
             # This mirrors the approach used for the OpenAI provider and allows
