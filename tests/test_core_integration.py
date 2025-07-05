@@ -7,12 +7,30 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from core.german_card import GermanCard
 from core.openai_vocab_provider import OpenaiVocabProvider
+from core.gtts_audio_provider import GttsAudioProvider
+from core.vocab_provider import VocabProvider, VocabItem
 
 # Import the real OpenAI client for testing
 try:
     import openai
 except ImportError:
     pytest.skip("OpenAI package not installed - skipping integration test")
+
+# Import gTTS for audio integration testing
+try:
+    from gtts import gTTS  # noqa: F401
+except ImportError:
+    pytest.skip("gTTS package not installed - skipping integration test")
+
+
+class DummyProvider(VocabProvider):
+    def get_vocab(self, term: str, context: str = "") -> VocabItem:
+        return VocabItem(
+            term=term,
+            term_translation=f"{term}_t",
+            sentence=f"S {term}",
+            sentence_translation=f"ST {term}",
+        )
 
 
 def test_german_card_openai_integration():
@@ -63,5 +81,25 @@ def test_german_card_openai_integration():
         pytest.fail(f"Integration test failed with error: {str(e)}")
 
 
+def test_gtts_audio_provider_integration():
+    """Integration test for audio generation using gTTS."""
+
+    if os.getenv("GTTS_ENABLED") != "true":
+        pytest.skip("GTTS_ENABLED environment variable not set to 'true' - skipping integration test")
+
+    card = GermanCard.create_from_user_input(
+        term="Haus",
+        context="",
+        audio_path="",
+        vocab_provider=DummyProvider(),
+        audio_provider=GttsAudioProvider(),
+    )
+
+    assert card.get_audio_data() is not None
+    assert isinstance(card.get_audio_data(), bytes)
+    assert card.get_audio_filename().endswith("_gtts.mp3")
+
+
 if __name__ == "__main__":
     test_german_card_openai_integration()
+    test_gtts_audio_provider_integration()
