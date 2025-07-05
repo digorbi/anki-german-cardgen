@@ -1,5 +1,7 @@
 # vendor directory
 plugin/vendor/
+# meta file for fast app configuration (contains sensetive information)
+plugin/meta.json 
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
