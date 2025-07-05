@@ -7,18 +7,42 @@ if addon_dir not in sys.path:
 
 from aqt import mw
 from aqt.qt import QAction
-from .view import get_card_input_dialog, show_info, show_warning
+from .view import (
+    get_card_input_dialog,
+    get_api_settings_dialog,
+    show_info,
+    show_warning,
+)
 from core.german_card import GermanCard
 from core.openai_vocab_provider import OpenaiVocabProvider
 from .anki_service import AnkiService
+
+
+def ensure_settings():
+    """Return API key and target language from config, prompting the user if needed."""
+    config = mw.addonManager.getConfig(__name__) or {}
+    api_key = config.get("openai_api_key", "")
+    target_language = config.get("target_language", "")
+    if not api_key or not target_language:
+        result = get_api_settings_dialog(mw, api_key, target_language or "English")
+        if not result:
+            return None, None
+        api_key, target_language = result
+        config["openai_api_key"] = api_key
+        config["target_language"] = target_language
+        mw.addonManager.writeConfig(__name__, config)
+    return api_key, target_language
 
 def generate_card():
     result = get_card_input_dialog(mw)
     if not result:
         return
 
-    api_key = os.environ.get("OPENAI_API_KEY")
-    target_language = os.environ.get("TARGET_LANGUAGE", "English")
+    api_key, target_language = ensure_settings()
+    if not api_key or not target_language:
+        show_warning("OpenAI configuration required to generate card.")
+        return
+
     vocab_provider = OpenaiVocabProvider(api_key, target_language)
 
     card = GermanCard.create_from_user_input(
@@ -38,3 +62,6 @@ def generate_card():
 action = QAction("German Card", mw)
 action.triggered.connect(generate_card)
 mw.form.menuTools.addAction(action)
+
+# Prompt for configuration when the add-on loads
+ensure_settings()

@@ -1,10 +1,51 @@
-from aqt.qt import QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton, QComboBox
+from aqt.qt import (
+    QDialog,
+    QVBoxLayout,
+    QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QComboBox,
+)
 
 class CardInputResult:
     def __init__(self, term, selected_deck_id, audio_path):
         self.term = term
         self.selected_deck_id = selected_deck_id
         self.audio_path = audio_path
+
+
+def get_api_settings_dialog(mw, api_key: str, target_language: str):
+    """Prompt for OpenAI API settings and return (api_key, target_language) or None."""
+    dialog = QDialog(mw)
+    dialog.setWindowTitle("OpenAI Settings")
+    layout = QVBoxLayout(dialog)
+
+    key_label = QLabel("OpenAI API key:")
+    key_input = QLineEdit(api_key)
+    key_input.setEchoMode(QLineEdit.EchoMode.Password)
+    layout.addWidget(key_label)
+    layout.addWidget(key_input)
+
+    lang_label = QLabel("Default translation language:")
+    lang_input = QLineEdit(target_language)
+    layout.addWidget(lang_label)
+    layout.addWidget(lang_input)
+
+    buttons = QHBoxLayout()
+    ok_button = QPushButton("Save")
+    cancel_button = QPushButton("Cancel")
+    buttons.addWidget(ok_button)
+    buttons.addWidget(cancel_button)
+    layout.addLayout(buttons)
+
+    ok_button.clicked.connect(dialog.accept)
+    cancel_button.clicked.connect(dialog.reject)
+
+    if dialog.exec() != QDialog.DialogCode.Accepted:
+        return None
+
+    return key_input.text().strip(), lang_input.text().strip()
 
 def get_card_input_dialog(mw):
     """
