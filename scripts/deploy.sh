@@ -11,7 +11,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
 # Anki add-ons directory
-ANKI_ADDONS_DIR="$HOME/Library/Application Support/Anki2/addons21/german_card"
+ANKI_ADDONS_DIR="$HOME/Library/Application Support/Anki2/addons21/german-cardgen"
 
 echo -e "${YELLOW}Deploying German Card Generator Plugin...${NC}"
 
