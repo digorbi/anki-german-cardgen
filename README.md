@@ -100,10 +100,10 @@ If integration tests fail with Error code: 429 - "quota exceeded" error: you nee
 - Check Tools → German Card Generator menu
 
 #### Plugin Carashes in Anki with an error `The 'openai' package is missing. Please ensure the addon was bundled correctly.`
-Install dependencies into the `plugin/vendor` folder using: `./scripts/bundle.py`
+- Install dependencies into the `plugin/vendor` folder using: `./scripts/bundle.py`
 
-#### Binary dependency errors (e.g. `No module named 'pydantic_core._pydantic_core'`)
-Make sure to bundle dependencies using **Python 3.9** (the same version as Anki). Use `pyenv local 3.9.21` and create your venv with that version before running the bundle script. The `.so` files in `vendor` must match Anki's Python version.
+#### Binary dependency errors (e.g. `No module named 'pydantic_core._pydantic_core'`). 
+- Make sure to bundle dependencies using **Python 3.9** (the same version as Anki). Use `pyenv local 3.9.21` and create your venv with that version before running the bundle script. The `.so` files in `vendor` must match Anki's Python version.
 ---
 
 **Note**: This project is currently in active development. The plugin may not be fully functional for all features listed in the requirements.
