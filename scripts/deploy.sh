@@ -16,12 +16,12 @@ ANKI_ADDONS_DIR="$HOME/Library/Application Support/Anki2/addons21/german_card"
 echo -e "${YELLOW}Deploying German Card Generator Plugin...${NC}"
 
 # Check if Anki add-ons directory exists
-if [ ! -d "$ANKI_ADDONS_DIR" ]; then
-    echo -e "${YELLOW}Creating Anki add-ons directory...${NC}"
-    mkdir -p "$ANKI_ADDONS_DIR"
-else
+if [ -d "$ANKI_ADDONS_DIR" ]; then
     echo -e "${YELLOW}Cleaning up existing files...${NC}"
     rm -rf "$ANKI_ADDONS_DIR"/*
+else
+    echo -e "${YELLOW}Creating Anki add-ons directory...${NC}"
+    mkdir -p "$ANKI_ADDONS_DIR"
 fi
 
 # Create core directory in addon
@@ -35,6 +35,7 @@ cp core/*.py "$ANKI_ADDONS_DIR/core/"
 echo -e "${YELLOW}Copying plugin files...${NC}"
 cp plugin/*.py "$ANKI_ADDONS_DIR/"
 cp plugin/*.json "$ANKI_ADDONS_DIR/"
+cp plugin/*.md "$ANKI_ADDONS_DIR/"
 
 # Copy vendor directory if it exists (bundled dependencies)
 if [ -d "plugin/vendor" ]; then

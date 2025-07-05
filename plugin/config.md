@@ -1,0 +1,2 @@
+- **openai_api_key**: Your OpenAI API key. See the [OpenAI platform](https://platform.openai.com/api-keys) for details.
+- **target_language**: The language to which input will be translated for generated cards (e.g., "English").
