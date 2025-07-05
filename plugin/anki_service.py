@@ -29,11 +29,28 @@ class AnkiService:
         self.mw.col.models.add(model)
         return model
 
+    def _save_audio_data_to_media(self, data: bytes, filename: str):
+        """Write raw audio bytes to Anki's media directory."""
+        if not filename:
+            return None
+        media_dir = self.mw.col.media.dir()
+        destination = os.path.join(media_dir, filename)
+        try:
+            with open(destination, "wb") as fh:
+                fh.write(data)
+            return filename
+        except Exception:
+            return None
+
     def _copy_audio_to_media(self, card: AudioCard):
         """
         Copy the audio file to Anki's media directory, overwriting if it exists.
         Returns the filename used in the media directory, or None if no audio or copy failed.
         """
+        audio_data = card.get_audio_data()
+        if audio_data is not None:
+            return self._save_audio_data_to_media(audio_data, card.get_audio_filename())
+
         audio_path = card.get_audio_path()
         if not audio_path or not os.path.exists(audio_path):
             return None
