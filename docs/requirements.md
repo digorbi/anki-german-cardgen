@@ -22,3 +22,4 @@
 - [X] NFR5: Clear logs or messages for debugging in dev mode
 - [X] NFR6: Plugin logic is modular and testable outside Anki
 - [ ] NFR7: Build plugin releases using github CI/CD
+- [ ] NFR8: Refactor AudioCard and simplify interface by reducing methods, use maps and remove Optinal
