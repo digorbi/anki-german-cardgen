@@ -42,5 +42,11 @@ if [ -d "plugin/vendor" ]; then
     cp -r plugin/vendor "$ANKI_ADDONS_DIR/"
 fi
 
+# Copy prompts directory (prompt templates)
+if [ -d "prompts" ]; then
+    echo -e "${YELLOW}Copying prompts directory...${NC}"
+    cp -r prompts "$ANKI_ADDONS_DIR/"
+fi
+
 echo -e "${GREEN}Plugin deployed successfully!${NC}"
 echo -e "${YELLOW}Please restart Anki to load the updated plugin.${NC}" 

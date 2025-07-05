@@ -51,7 +51,7 @@ def test_german_card_openai_integration():
         # Verify that the vocab provider populated the card with data
         assert card.sentence != "", "Sentence should be populated by OpenAI"
         assert card.term_translation != "", "Term translation should be populated by OpenAI"
-        assert card.sentence_translation != "", "Sentence translation should be populated by OpenAI"        
+        assert card.sentence_translation != "", "Sentence translation should be populated by OpenAI"
         
         print(f"✅ Integration test passed! Created card for term: '{test_term}'")
         print(f"   Updated Term: {card.term}")
