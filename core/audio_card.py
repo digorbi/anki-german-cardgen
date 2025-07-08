@@ -10,11 +10,11 @@ class AudioCard(Protocol):
     def get_template_name(self) -> str:
         ...
 
-    def get_fields(self) -> dict:
+    def get_fields(self) -> dict[str, str]:
         """Return mapping of field names to values."""
         ...
 
-    def get_template(self) -> dict:
+    def get_template(self) -> dict[str, str]:
         """Return mapping with 'qfmt' and 'afmt' template strings."""
         ...
 

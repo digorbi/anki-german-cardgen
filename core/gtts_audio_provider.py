@@ -11,7 +11,7 @@ from typing import Any, Optional
 class GttsAudioProvider:
     """Retrieve audio data using the gTTS library."""
 
-    def __init__(self, lang, *, gtts_factory: Optional[Any] = None) -> None:
+    def __init__(self, lang: str, *, gtts_factory: Optional[Any] = None) -> None:
         if gtts_factory is None:
             # Try to import from bundled vendor directory first
             # This mirrors the approach used for the OpenAI provider and allows

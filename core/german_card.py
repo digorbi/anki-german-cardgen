@@ -1,3 +1,4 @@
+from __future__ import annotations
 from .vocab_provider import VocabProvider
 from .audio_provider import AudioProvider
 from typing import Optional
@@ -12,13 +13,13 @@ class GermanCard:
         self._id = self._gen_id(term)
         self.term = term
         self.context = context
-        self._audio_data = None
+        self._audio_data: Optional[bytes] = None
         self._audio_filename = ""
         self.sentence = ""
         self.term_translation = ""
         self.sentence_translation = ""
 
-    def _gen_id(self, term: str):
+    def _gen_id(self, term: str) -> str:
         """Generate ID based on term value by converting to lowercase and replacing spaces with underscores"""
         # Convert to lowercase and replace spaces with underscores
         id_base = term.lower().replace(' ', '_')
@@ -35,7 +36,7 @@ class GermanCard:
         # Remove any remaining special characters and keep only alphanumeric and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return bool(self._id)
 
     # AudioCard interface implementation
@@ -45,7 +46,7 @@ class GermanCard:
     def get_template_name(self) -> str:
         return "Contextual Audio Card"
 
-    def get_fields(self) -> dict:
+    def get_fields(self) -> dict[str, str]:
         if self._audio_filename:
             audio_field = f"[sound:{self._audio_filename}]"
         else:
@@ -60,7 +61,7 @@ class GermanCard:
             "context": self.context,
         }
 
-    def get_template(self) -> dict:
+    def get_template(self) -> dict[str, str]:
         return {
             "qfmt": """
 <div class="term">{{term}}</div>
@@ -90,7 +91,7 @@ class GermanCard:
         context: str,
         vocab_provider: VocabProvider,
         audio_provider: AudioProvider,
-    ):
+    ) -> GermanCard:
         """Create a card using vocabulary data from ``vocab_provider``."""
 
         data = vocab_provider.get_vocab(term, context)

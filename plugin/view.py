@@ -1,4 +1,4 @@
-from aqt.qt import (
+from aqt.qt import (  # type: ignore
     QDialog,
     QVBoxLayout,
     QHBoxLayout,
@@ -8,16 +8,32 @@ from aqt.qt import (
     QComboBox,
     QTextEdit,
 )
+from aqt.utils import ( # type: ignore
+    showInfo,
+    showWarning
+)
 
+from typing import Optional, Any
+from dataclasses import dataclass
+
+@dataclass
 class CardInputResult:
-    def __init__(self, term, selected_deck_id, context):
-        self.term = term
-        self.selected_deck_id = selected_deck_id
-        self.context = context
+    term: str
+    selected_deck_id: int
+    context: str
+
+@dataclass
+class SettingsResult:
+    api_key: str
+    target_language: str
 
 
-def get_api_settings_dialog(mw, api_key: str, target_language: str):
-    """Prompt for OpenAI API settings and return (api_key, target_language) or None."""
+def get_settings_dialog(
+    mw: Any,
+    api_key: str,
+    target_language: str
+) -> Optional[SettingsResult]:
+    """Prompt for OpenAI API settings and return SettingsResult or None."""
     dialog = QDialog(mw)
     dialog.setWindowTitle("OpenAI Settings")
     layout = QVBoxLayout(dialog)
@@ -46,9 +62,12 @@ def get_api_settings_dialog(mw, api_key: str, target_language: str):
     if dialog.exec() != QDialog.DialogCode.Accepted:
         return None
 
-    return key_input.text().strip(), lang_input.text().strip()
+    return SettingsResult(
+        api_key=key_input.text().strip(),
+        target_language=lang_input.text().strip()
+    )
 
-def get_card_input_dialog(mw):
+def get_card_input_dialog(mw: Any) -> Optional[CardInputResult]:
     """
     Show the card input dialog and return CardInputResult or None if cancelled.
     """
@@ -109,10 +128,8 @@ def get_card_input_dialog(mw):
     selected_deck_id = deck_combo.currentData()
     return CardInputResult(term, selected_deck_id, context)
 
-def show_info(message):
-    from aqt.utils import showInfo
+def show_info(message: str) -> None:
     showInfo(message)
 
-def show_warning(message):
-    from aqt.utils import showWarning
+def show_warning(message: str) -> None:
     showWarning(message)

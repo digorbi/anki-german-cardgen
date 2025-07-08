@@ -36,7 +36,7 @@ class OpenaiVocabProvider:
                 if os.path.exists(vendor_dir) and vendor_dir not in sys.path:
                     sys.path.insert(0, vendor_dir)
                 
-                import openai  # type: ignore
+                import openai
                 self._openai = openai
             except ImportError:
                 raise ImportError(
