@@ -1,3 +1,4 @@
+from ctypes import resize
 import sys
 import os
 # Add the addon directory to Python path so core package can be found
@@ -48,7 +49,7 @@ def generate_card():
     audio_provider = GttsAudioProvider("de")
 
     card = GermanCard.create_from_user_input(
-        result.term, "", vocab_provider, audio_provider
+        result.term, result.context, vocab_provider, audio_provider
     )
     if not card.is_valid():
         show_warning("Invalid card data.")

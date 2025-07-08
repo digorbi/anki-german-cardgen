@@ -6,12 +6,14 @@ from aqt.qt import (
     QLineEdit,
     QPushButton,
     QComboBox,
+    QTextEdit,
 )
 
 class CardInputResult:
-    def __init__(self, term, selected_deck_id):
+    def __init__(self, term, selected_deck_id, context):
         self.term = term
         self.selected_deck_id = selected_deck_id
+        self.context = context
 
 
 def get_api_settings_dialog(mw, api_key: str, target_language: str):
@@ -62,6 +64,13 @@ def get_card_input_dialog(mw):
     layout.addWidget(term_label)
     layout.addWidget(term_input)
 
+    # Context input (multiline)
+    context_label = QLabel("Context (optional):")
+    context_input = QTextEdit()
+    context_input.setMinimumHeight(80)  # Make it big
+    layout.addWidget(context_label)
+    layout.addWidget(context_input)
+
     # Deck selection
     deck_label = QLabel("Select deck:")
     deck_combo = QComboBox()
@@ -80,7 +89,6 @@ def get_card_input_dialog(mw):
     layout.addWidget(deck_label)
     layout.addWidget(deck_combo)
 
-
     # Buttons
     button_layout = QHBoxLayout()
     ok_button = QPushButton("Generate Card")
@@ -97,8 +105,9 @@ def get_card_input_dialog(mw):
         return None
 
     term = term_input.text().strip()
+    context = context_input.toPlainText().strip()
     selected_deck_id = deck_combo.currentData()
-    return CardInputResult(term, selected_deck_id)
+    return CardInputResult(term, selected_deck_id, context)
 
 def show_info(message):
     from aqt.utils import showInfo
