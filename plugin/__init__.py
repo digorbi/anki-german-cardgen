@@ -2,6 +2,11 @@ import os
 import sys
 from typing import Optional
 
+# Add the addon directory to Python path so core package can be found
+addon_dir = os.path.dirname(__file__)
+if addon_dir not in sys.path:
+    sys.path.insert(0, addon_dir)
+
 from aqt import mw  # type: ignore
 from aqt.qt import QAction  # type: ignore
 
@@ -18,11 +23,6 @@ from .view import (
     show_warning,
 )
 
-# Add the addon directory to Python path so core package can be found
-addon_dir = os.path.dirname(__file__)
-if addon_dir not in sys.path:
-    sys.path.insert(0, addon_dir)
-
 
 def ensure_settings() -> Optional[SettingsResult]:
     """Return API key and target language from config, prompting the user if needed."""
@@ -37,7 +37,8 @@ def ensure_settings() -> Optional[SettingsResult]:
         config["openai_api_key"] = result.api_key
         config["target_language"] = result.target_language
         mw.addonManager.writeConfig(__name__, config)
-    return result
+    # If config is present, construct a SettingsResult
+    return SettingsResult(api_key=api_key, target_language=target_language)
 
 def generate_card() -> None:
     settings = ensure_settings()
