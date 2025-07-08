@@ -3,11 +3,10 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from core.german_card import GermanCard
-from core.vocab_provider import VocabProvider, VocabItem
-from core.audio_provider import AudioProvider
+from core.vocab_provider import VocabItem
 
 
-class DummyProvider(VocabProvider):
+class DummyProvider:
     def get_vocab(self, term, context: str = "") -> VocabItem:
         return VocabItem(
             term=term,
@@ -16,7 +15,7 @@ class DummyProvider(VocabProvider):
             sentence_translation=f"ST {term}",
         )
 
-class DummyAudioProvider(AudioProvider):
+class DummyAudioProvider:
     def get_audio(self, text: str) -> bytes:
         return b"dummy"
 

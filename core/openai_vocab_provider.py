@@ -7,10 +7,10 @@ from typing import Any, Optional
 import json
 import os
 
-from .vocab_provider import VocabProvider, VocabItem
+from .vocab_provider import VocabItem
 
 
-class OpenaiVocabProvider(VocabProvider):
+class OpenaiVocabProvider:
     """Retrieve vocabulary data using OpenAI chat completion."""
 
     def __init__(

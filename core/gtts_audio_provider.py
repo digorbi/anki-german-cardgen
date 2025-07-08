@@ -6,10 +6,9 @@ import io
 import os
 from typing import Any, Optional
 
-from .audio_provider import AudioProvider
 
 
-class GttsAudioProvider(AudioProvider):
+class GttsAudioProvider:
     """Retrieve audio data using the gTTS library."""
 
     def __init__(self, lang, *, gtts_factory: Optional[Any] = None) -> None:

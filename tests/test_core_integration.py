@@ -8,8 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 from core.german_card import GermanCard
 from core.openai_vocab_provider import OpenaiVocabProvider
 from core.gtts_audio_provider import GttsAudioProvider
-from core.vocab_provider import VocabProvider, VocabItem
-from core.audio_provider import AudioProvider
+from core.vocab_provider import VocabItem
 
 # Import the real OpenAI client for testing
 try:
@@ -24,7 +23,7 @@ except ImportError:
     pytest.skip("gTTS package not installed - skipping integration test")
 
 
-class DummyProvider(VocabProvider):
+class DummyProvider:
     def get_vocab(self, term: str, context: str = "") -> VocabItem:
         return VocabItem(
             term=term,
@@ -34,7 +33,7 @@ class DummyProvider(VocabProvider):
         )
 
 
-class DummyAudioProvider(AudioProvider):
+class DummyAudioProvider:
     def get_audio(self, text: str) -> bytes:
         return b"dummy"
 

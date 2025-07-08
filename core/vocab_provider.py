@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 from dataclasses import dataclass
+from typing import Protocol, runtime_checkable
 
 
 
@@ -17,12 +17,13 @@ class VocabItem:
     sentence_translation: str = ""
 
 
-class VocabProvider(ABC):
-    """Abstract base class for vocabulary providers."""
 
-    @abstractmethod
+@runtime_checkable
+class VocabProvider(Protocol):
+    """Protocol describing a provider capable of returning vocabulary info."""
+
     def get_vocab(self, term: str, context: str = "") -> VocabItem:
         """Return :class:`VocabItem` for the given term."""
-        raise NotImplementedError
+        ...
 
 

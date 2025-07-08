@@ -1,10 +1,9 @@
-from .audio_card import AudioCard
 from .vocab_provider import VocabProvider
 from .audio_provider import AudioProvider
 from typing import Optional
 import re
 
-class GermanCard(AudioCard):
+class GermanCard:
     def __init__(
         self,
         term: str,
