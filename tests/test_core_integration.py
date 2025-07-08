@@ -40,7 +40,7 @@ class DummyAudioProvider:
     def get_file_name(self, base: str) -> str:
         return f"{base}_dummy.mp3"
 
-
+@pytest.mark.integration
 def test_german_card_openai_integration():
     """Integration test for GermanCard creation with real OpenAI vocab provider."""
     
@@ -87,7 +87,7 @@ def test_german_card_openai_integration():
     except Exception as e:
         pytest.fail(f"Integration test failed with error: {str(e)}")
 
-
+@pytest.mark.integration
 def test_gtts_audio_provider_integration():
     """Integration test for audio generation using gTTS."""
 
