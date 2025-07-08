@@ -28,7 +28,8 @@ class GttsAudioProvider:
                 self._gtts_factory = gTTS
             except ImportError as exc:  # pragma: no cover - import error path
                 raise ImportError(
-                    "The 'gTTS' package is missing. Please ensure the addon was bundled correctly."
+                    "The 'gTTS' package is missing. Please ensure the addon was "
+                    "bundled correctly."
                 ) from exc
         else:
             self._gtts_factory = gtts_factory

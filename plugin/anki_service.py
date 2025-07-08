@@ -10,7 +10,8 @@ class AnkiService:
 
     def _ensure_model_exists(self, card: AudioCard) -> Any:
         """
-        Ensure the model for the given AudioCard exists in Anki, creating it if necessary.
+        Ensure the model for the given AudioCard exists in Anki, creating it if
+        necessary.
         Returns the model.
         """
         model_name = card.get_model_name()
@@ -32,7 +33,8 @@ class AnkiService:
 
     def _save_card_audio_to_media(self, card: AudioCard) -> None:
         """
-        Save the audio data from the AudioCard to Anki's media directory, overwriting if it exists.
+        Save the audio data from the AudioCard to Anki's media directory,
+        overwriting if it exists.
         Does nothing if there is no audio data or filename.
         """
         audio_data = card.get_audio_data()

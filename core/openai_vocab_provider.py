@@ -23,9 +23,10 @@ class OpenaiVocabProvider:
     ) -> None:
         if openai_client is None:
             # Try to import from bundled vendor directory first
-            # This ensures the addon works without requiring users to install dependencies
-            # The vendor directory contains pre-bundled packages (openai, requests, etc.)
-            # that are included with the addon distribution
+            # Ensures the addon works without requiring users to install
+            # dependencies. The vendor directory contains pre-bundled packages
+            # (openai, requests, etc.) that are included with the addon
+            # distribution.
             try:
                 import sys
 
@@ -38,10 +39,11 @@ class OpenaiVocabProvider:
 
                 import openai
                 self._openai = openai
-            except ImportError:
+            except ImportError as exc:
                 raise ImportError(
-                    "The 'openai' package is missing. Please ensure the addon was bundled correctly."
-                )
+                    "The 'openai' package is missing. Please ensure the addon "
+                    "was bundled correctly."
+                ) from exc
         else:
             self._openai = openai_client
 

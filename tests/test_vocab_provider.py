@@ -43,7 +43,10 @@ class FakeOpenAI:
 
 
 def test_get_vocab():
-    json_resp = '{"term":"der Hund","term_translation":"dog","sentence":"Der Hund bellt.","sentence_translation":"The dog barks."}'
+    json_resp = (
+        '{"term":"der Hund","term_translation":"dog","sentence":"Der Hund bellt."'
+        ',"sentence_translation":"The dog barks."}'
+    )
     fake_client = FakeOpenAI(json_resp)
     provider = OpenaiVocabProvider("test", "English", openai_client=fake_client)
     data = provider.get_vocab("Hund", "")

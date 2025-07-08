@@ -8,6 +8,13 @@ from .vocab_provider import VocabProvider
 
 
 class GermanCard:
+    _UMLAUTS = {
+        'ä': 'ae',
+        'ö': 'oe',
+        'ü': 'ue',
+        'ß': 'ss',
+    }
+
     def __init__(
         self,
         term: str,
@@ -23,20 +30,15 @@ class GermanCard:
         self.sentence_translation = ""
 
     def _gen_id(self, term: str) -> str:
-        """Generate ID based on term value by converting to lowercase and replacing spaces with underscores"""
+        """Generate ID based on term value by converting to lowercase and
+        replacing spaces with underscores"""
         # Convert to lowercase and replace spaces with underscores
         id_base = term.lower().replace(' ', '_')
-
-        # Handle German umlauts and special characters
-        umlaut_map = {
-            'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss'
-        }
-
-        # Replace umlauts and special characters
-        for umlaut, replacement in umlaut_map.items():
+        # Replace German umlauts with their ASCII equivalents
+        for umlaut, replacement in self._UMLAUTS.items():
             id_base = id_base.replace(umlaut, replacement)
-
-        # Remove any remaining special characters and keep only alphanumeric and underscores
+        # Remove any remaining special characters and keep only alphanumeric
+        # and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
 
     def is_valid(self) -> bool:

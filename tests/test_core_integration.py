@@ -48,7 +48,9 @@ def test_german_card_openai_integration():
     # Check if OpenAI API key is available
     api_key = os.getenv('OPENAI_API_KEY')
     if not api_key:
-        pytest.skip("OPENAI_API_KEY environment variable not set - skipping integration test")
+        pytest.skip(
+            "OPENAI_API_KEY environment variable not set - skipping integration test"
+        )
 
     # Test parameters
     test_term = "Haus"
@@ -72,12 +74,16 @@ def test_german_card_openai_integration():
 
         # Verify the card was created successfully
         assert card is not None
-        assert card.is_valid() == True
+        assert card.is_valid()
 
         # Verify that the vocab provider populated the card with data
         assert card.sentence != "", "Sentence should be populated by OpenAI"
-        assert card.term_translation != "", "Term translation should be populated by OpenAI"
-        assert card.sentence_translation != "", "Sentence translation should be populated by OpenAI"
+        assert card.term_translation != "", (
+            "Term translation should be populated by OpenAI"
+        )
+        assert card.sentence_translation != "", (
+            "Sentence translation should be populated by OpenAI"
+        )
 
         print(f"✅ Integration test passed! Created card for term: '{test_term}'")
         print(f"   Updated Term: {card.term}")
@@ -93,7 +99,10 @@ def test_gtts_audio_provider_integration():
     """Integration test for audio generation using gTTS."""
 
     if os.getenv("GTTS_ENABLED") != "true":
-        pytest.skip("GTTS_ENABLED environment variable not set to 'true' - skipping integration test")
+        pytest.skip(
+            "GTTS_ENABLED environment variable not set to 'true' - "
+            "skipping integration test"
+        )
 
     from gtts import gTTS
 

@@ -1,12 +1,6 @@
 import os
 import sys
-from ctypes import resize
 from typing import Optional
-
-# Add the addon directory to Python path so core package can be found
-addon_dir = os.path.dirname(__file__)
-if addon_dir not in sys.path:
-    sys.path.insert(0, addon_dir)
 
 from aqt import mw  # type: ignore
 from aqt.qt import QAction  # type: ignore
@@ -23,6 +17,11 @@ from .view import (
     show_info,
     show_warning,
 )
+
+# Add the addon directory to Python path so core package can be found
+addon_dir = os.path.dirname(__file__)
+if addon_dir not in sys.path:
+    sys.path.insert(0, addon_dir)
 
 
 def ensure_settings() -> Optional[SettingsResult]:
