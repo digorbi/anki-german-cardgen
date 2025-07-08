@@ -1,13 +1,13 @@
-import sys
 import os
+import sys
+
 sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from core.german_card import GermanCard
-from core.vocab_provider import VocabProvider, VocabItem
-from core.audio_provider import AudioProvider
+from core.vocab_provider import VocabItem
 
 
-class DummyProvider(VocabProvider):
+class DummyProvider:
     def get_vocab(self, term, context: str = "") -> VocabItem:
         return VocabItem(
             term=term,
@@ -16,7 +16,7 @@ class DummyProvider(VocabProvider):
             sentence_translation=f"ST {term}",
         )
 
-class DummyAudioProvider(AudioProvider):
+class DummyAudioProvider:
     def get_audio(self, text: str) -> bytes:
         return b"dummy"
 
@@ -32,11 +32,11 @@ def test_german_card_creation():
     assert card.term == "Haus"
     assert card.context == "Das Haus ist groß."
     assert card.get_audio_filename() == ""
-    assert card.is_valid() == True
+    assert card.is_valid()
 
 def test_german_card_invalid():
     card = GermanCard(term="", context="Test")
-    assert card.is_valid() == False
+    assert not card.is_valid()
 
 def test_gen_id():
     """Test ID generation with table-driven tests"""
@@ -84,7 +84,9 @@ def test_gen_id():
 
     for term, expected_id in test_cases:
         card = GermanCard(term=term, context="Test")
-        assert card._id == expected_id, f"Failed for term: '{term}', expected: '{expected_id}', got: '{card._id}'"
+        assert card._id == expected_id, (
+            f"Failed for term: '{term}', expected: '{expected_id}', got: '{card._id}'"
+        )
 
 def test_create_from_user_input():
     card = GermanCard.create_from_user_input(

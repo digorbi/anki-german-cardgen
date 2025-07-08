@@ -90,6 +90,17 @@ The project uses pytest for testing. To run the test suite:
 pytest
 ```
 
+### Linting & Static Analysis
+Code style and static analysis are enforced with [ruff](https://docs.astral.sh/ruff/) and [mypy](http://mypy-lang.org/). These checks run automatically in CI, but you can run them locally:
+
+```bash
+# Run linter
+ruff check .
+
+# Run static type checks
+mypy .
+```
+
 ### 🔧 Troubleshooting
 
 #### OpenAI API Quota Issues

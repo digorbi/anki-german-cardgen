@@ -1,29 +1,26 @@
-from abc import ABC, abstractmethod
-from typing import Optional
+"""Protocol defining the minimal interface for audio-based cards."""
 
-class AudioCard(ABC):
-    @abstractmethod
+from typing import Optional, Protocol, runtime_checkable
+
+
+@runtime_checkable
+class AudioCard(Protocol):
     def get_model_name(self) -> str:
-        pass
+        ...
 
-    @abstractmethod
     def get_template_name(self) -> str:
-        pass
+        ...
 
-    @abstractmethod
-    def get_fields(self) -> dict:
+    def get_fields(self) -> dict[str, str]:
         """Return mapping of field names to values."""
-        pass
+        ...
 
-    @abstractmethod
-    def get_template(self) -> dict:
+    def get_template(self) -> dict[str, str]:
         """Return mapping with 'qfmt' and 'afmt' template strings."""
-        pass
+        ...
 
-    @abstractmethod
     def get_audio_data(self) -> Optional[bytes]:
-        pass
+        ...
 
-    @abstractmethod
     def get_audio_filename(self) -> str:
-        pass
+        ...

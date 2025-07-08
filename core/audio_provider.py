@@ -1,14 +1,16 @@
-from abc import ABC, abstractmethod
+"""Audio provider protocol used for supplying sound data."""
 
-class AudioProvider(ABC):
-    """Abstract base class for audio providers."""
+from typing import Protocol, runtime_checkable
 
-    @abstractmethod
+
+@runtime_checkable
+class AudioProvider(Protocol):
+    """Protocol describing an object that can supply audio data."""
+
     def get_audio(self, text: str) -> bytes:
         """Return audio bytes for the given text."""
-        raise NotImplementedError
+        ...
 
-    @abstractmethod
     def get_file_name(self, base: str) -> str:
-        """Returns the filename with the provider identifier and respected file format. Uses the base argument to ensure filename uniqueness."""
-        raise NotImplementedError
+        """Return a unique audio filename for ``base``."""
+        ...

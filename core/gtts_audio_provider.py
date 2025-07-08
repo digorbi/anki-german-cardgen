@@ -6,13 +6,11 @@ import io
 import os
 from typing import Any, Optional
 
-from .audio_provider import AudioProvider
 
-
-class GttsAudioProvider(AudioProvider):
+class GttsAudioProvider:
     """Retrieve audio data using the gTTS library."""
 
-    def __init__(self, lang, *, gtts_factory: Optional[Any] = None) -> None:
+    def __init__(self, lang: str, *, gtts_factory: Optional[Any] = None) -> None:
         if gtts_factory is None:
             # Try to import from bundled vendor directory first
             # This mirrors the approach used for the OpenAI provider and allows
@@ -30,7 +28,8 @@ class GttsAudioProvider(AudioProvider):
                 self._gtts_factory = gTTS
             except ImportError as exc:  # pragma: no cover - import error path
                 raise ImportError(
-                    "The 'gTTS' package is missing. Please ensure the addon was bundled correctly."
+                    "The 'gTTS' package is missing. Please ensure the addon was "
+                    "bundled correctly."
                 ) from exc
         else:
             self._gtts_factory = gtts_factory

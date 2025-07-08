@@ -1,10 +1,20 @@
-from .audio_card import AudioCard
-from .vocab_provider import VocabProvider
-from .audio_provider import AudioProvider
-from typing import Optional
-import re
+from __future__ import annotations
 
-class GermanCard(AudioCard):
+import re
+from typing import Optional
+
+from .audio_provider import AudioProvider
+from .vocab_provider import VocabProvider
+
+
+class GermanCard:
+    _UMLAUTS = {
+        'ä': 'ae',
+        'ö': 'oe',
+        'ü': 'ue',
+        'ß': 'ss',
+    }
+
     def __init__(
         self,
         term: str,
@@ -13,30 +23,25 @@ class GermanCard(AudioCard):
         self._id = self._gen_id(term)
         self.term = term
         self.context = context
-        self._audio_data = None
+        self._audio_data: Optional[bytes] = None
         self._audio_filename = ""
         self.sentence = ""
         self.term_translation = ""
         self.sentence_translation = ""
 
-    def _gen_id(self, term: str):
-        """Generate ID based on term value by converting to lowercase and replacing spaces with underscores"""
+    def _gen_id(self, term: str) -> str:
+        """Generate ID based on term value by converting to lowercase and
+        replacing spaces with underscores"""
         # Convert to lowercase and replace spaces with underscores
         id_base = term.lower().replace(' ', '_')
-        
-        # Handle German umlauts and special characters
-        umlaut_map = {
-            'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss'
-        }
-        
-        # Replace umlauts and special characters
-        for umlaut, replacement in umlaut_map.items():
+        # Replace German umlauts with their ASCII equivalents
+        for umlaut, replacement in self._UMLAUTS.items():
             id_base = id_base.replace(umlaut, replacement)
-        
-        # Remove any remaining special characters and keep only alphanumeric and underscores
+        # Remove any remaining special characters and keep only alphanumeric
+        # and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
 
-    def is_valid(self):
+    def is_valid(self) -> bool:
         return bool(self._id)
 
     # AudioCard interface implementation
@@ -46,7 +51,7 @@ class GermanCard(AudioCard):
     def get_template_name(self) -> str:
         return "Contextual Audio Card"
 
-    def get_fields(self) -> dict:
+    def get_fields(self) -> dict[str, str]:
         if self._audio_filename:
             audio_field = f"[sound:{self._audio_filename}]"
         else:
@@ -61,7 +66,7 @@ class GermanCard(AudioCard):
             "context": self.context,
         }
 
-    def get_template(self) -> dict:
+    def get_template(self) -> dict[str, str]:
         return {
             "qfmt": """
 <div class="term">{{term}}</div>
@@ -91,7 +96,7 @@ class GermanCard(AudioCard):
         context: str,
         vocab_provider: VocabProvider,
         audio_provider: AudioProvider,
-    ):
+    ) -> GermanCard:
         """Create a card using vocabulary data from ``vocab_provider``."""
 
         data = vocab_provider.get_vocab(term, context)
