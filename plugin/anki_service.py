@@ -1,6 +1,8 @@
 import os
 from typing import Any
+
 from core.audio_card import AudioCard
+
 
 class AnkiService:
     def __init__(self, mw: Any) -> None:

@@ -6,7 +6,6 @@ from dataclasses import dataclass
 from typing import Protocol, runtime_checkable
 
 
-
 @dataclass
 class VocabItem:
     """Simple container for vocabulary information."""

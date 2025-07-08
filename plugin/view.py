@@ -1,20 +1,18 @@
+from dataclasses import dataclass
+from typing import Any, Optional
+
 from aqt.qt import (  # type: ignore
+    QComboBox,
     QDialog,
-    QVBoxLayout,
     QHBoxLayout,
     QLabel,
     QLineEdit,
     QPushButton,
-    QComboBox,
     QTextEdit,
+    QVBoxLayout,
 )
-from aqt.utils import ( # type: ignore
-    showInfo,
-    showWarning
-)
+from aqt.utils import showInfo, showWarning  # type: ignore
 
-from typing import Optional, Any
-from dataclasses import dataclass
 
 @dataclass
 class CardInputResult:

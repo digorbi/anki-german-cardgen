@@ -2,6 +2,7 @@
 
 from typing import Optional, Protocol, runtime_checkable
 
+
 @runtime_checkable
 class AudioCard(Protocol):
     def get_model_name(self) -> str:

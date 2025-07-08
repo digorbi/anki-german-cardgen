@@ -7,7 +7,6 @@ import os
 from typing import Any, Optional
 
 
-
 class GttsAudioProvider:
     """Retrieve audio data using the gTTS library."""
 

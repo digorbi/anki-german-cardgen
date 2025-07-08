@@ -2,6 +2,7 @@
 
 from typing import Protocol, runtime_checkable
 
+
 @runtime_checkable
 class AudioProvider(Protocol):
     """Protocol describing an object that can supply audio data."""

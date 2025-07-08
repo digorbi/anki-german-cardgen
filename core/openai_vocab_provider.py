@@ -2,10 +2,10 @@
 
 from __future__ import annotations
 
-from string import Template
-from typing import Any, Optional
 import json
 import os
+from string import Template
+from typing import Any, Optional
 
 from .vocab_provider import VocabItem
 
@@ -28,14 +28,14 @@ class OpenaiVocabProvider:
             # that are included with the addon distribution
             try:
                 import sys
-                
+
                 # Get the addon directory (plugin/__init__.py is the entry point)
                 addon_dir = os.path.dirname(os.path.dirname(__file__))
                 vendor_dir = os.path.join(addon_dir, "vendor")
-                
+
                 if os.path.exists(vendor_dir) and vendor_dir not in sys.path:
                     sys.path.insert(0, vendor_dir)
-                
+
                 import openai
                 self._openai = openai
             except ImportError:

@@ -1,7 +1,8 @@
-from ctypes import resize
-import sys
 import os
+import sys
+from ctypes import resize
 from typing import Optional
+
 # Add the addon directory to Python path so core package can be found
 addon_dir = os.path.dirname(__file__)
 if addon_dir not in sys.path:
@@ -9,17 +10,19 @@ if addon_dir not in sys.path:
 
 from aqt import mw  # type: ignore
 from aqt.qt import QAction  # type: ignore
+
+from core.german_card import GermanCard
+from core.gtts_audio_provider import GttsAudioProvider
+from core.openai_vocab_provider import OpenaiVocabProvider
+
+from .anki_service import AnkiService
 from .view import (
+    SettingsResult,
     get_card_input_dialog,
     get_settings_dialog,
     show_info,
     show_warning,
-    SettingsResult
 )
-from core.german_card import GermanCard
-from core.openai_vocab_provider import OpenaiVocabProvider
-from core.gtts_audio_provider import GttsAudioProvider
-from .anki_service import AnkiService
 
 
 def ensure_settings() -> Optional[SettingsResult]:
@@ -42,7 +45,7 @@ def generate_card() -> None:
     if not settings:
         show_warning("OpenAI configuration required to generate card.")
         return
-    
+
     result = get_card_input_dialog(mw)
     if not result:
         return

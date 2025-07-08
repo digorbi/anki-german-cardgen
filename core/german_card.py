@@ -1,8 +1,11 @@
 from __future__ import annotations
-from .vocab_provider import VocabProvider
-from .audio_provider import AudioProvider
-from typing import Optional
+
 import re
+from typing import Optional
+
+from .audio_provider import AudioProvider
+from .vocab_provider import VocabProvider
+
 
 class GermanCard:
     def __init__(
@@ -23,16 +26,16 @@ class GermanCard:
         """Generate ID based on term value by converting to lowercase and replacing spaces with underscores"""
         # Convert to lowercase and replace spaces with underscores
         id_base = term.lower().replace(' ', '_')
-        
+
         # Handle German umlauts and special characters
         umlaut_map = {
             'ä': 'ae', 'ö': 'oe', 'ü': 'ue', 'ß': 'ss'
         }
-        
+
         # Replace umlauts and special characters
         for umlaut, replacement in umlaut_map.items():
             id_base = id_base.replace(umlaut, replacement)
-        
+
         # Remove any remaining special characters and keep only alphanumeric and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
 
