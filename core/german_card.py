@@ -1,8 +1,8 @@
 from .audio_card import AudioCard
 from .vocab_provider import VocabProvider
 from .audio_provider import AudioProvider
-import re
 from typing import Optional
+import re
 
 class GermanCard(AudioCard):
     def __init__(
@@ -43,44 +43,40 @@ class GermanCard(AudioCard):
     def get_model_name(self) -> str:
         return "German Contextual Vocab"
 
-    def get_model_fields_names(self) -> list:
-        return ["id", "term", "sentence", "sentence_audio", "term_translation", "sentence_translation", "context"]
-
     def get_template_name(self) -> str:
         return "Contextual Audio Card"
 
-    def get_qfmt_template(self) -> str:
-        return """
+    def get_fields(self) -> dict:
+        if self._audio_filename:
+            audio_field = f"[sound:{self._audio_filename}]"
+        else:
+            audio_field = ""
+        return {
+            "id": self._id,
+            "term": self.term,
+            "sentence": self.sentence,
+            "sentence_audio": audio_field,
+            "term_translation": self.term_translation,
+            "sentence_translation": self.sentence_translation,
+            "context": self.context,
+        }
+
+    def get_template(self) -> dict:
+        return {
+            "qfmt": """
 <div class="term">{{term}}</div>
 <div class="sentence">{{sentence}}</div>
 {{sentence_audio}}
-"""
-
-    def get_afmt_template(self) -> str:
-        return """
+""",
+            "afmt": """
 <div class="term">{{term}}</div>
 <div class="term-translation">{{term_translation}}</div>
 <div class="sentence">{{sentence}}</div>
 <div class="sentence-translation">{{sentence_translation}}</div>
 {{sentence_audio}}
 <div class="context">{{context}}</div>
-"""
-
-    def to_fields_list(self) -> list:
-        if self._audio_filename:
-            audio_field = f"[sound:{self._audio_filename}]"
-        else:
-            audio_field = ""
-
-        return [
-            self._id,
-            self.term,
-            self.sentence,
-            audio_field,
-            self.term_translation,
-            self.sentence_translation,
-            self.context
-        ]
+""",
+        }
 
     def get_audio_data(self) -> Optional[bytes]:
         return self._audio_data
@@ -94,7 +90,7 @@ class GermanCard(AudioCard):
         term: str,
         context: str,
         vocab_provider: VocabProvider,
-        audio_provider: Optional[AudioProvider] = None,
+        audio_provider: AudioProvider,
     ):
         """Create a card using vocabulary data from ``vocab_provider``."""
 
@@ -104,11 +100,8 @@ class GermanCard(AudioCard):
         card.term_translation = data.term_translation
         card.sentence_translation = data.sentence_translation
 
-        if audio_provider is None:
-            card._audio_data = None
-        else:
-            card._audio_data = audio_provider.get_audio(card.sentence)
-            card._audio_filename = audio_provider.get_file_name(card._id)
+        card._audio_data = audio_provider.get_audio(card.sentence)
+        card._audio_filename = audio_provider.get_file_name(card._id)
 
         return card
 

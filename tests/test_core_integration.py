@@ -9,6 +9,7 @@ from core.german_card import GermanCard
 from core.openai_vocab_provider import OpenaiVocabProvider
 from core.gtts_audio_provider import GttsAudioProvider
 from core.vocab_provider import VocabProvider, VocabItem
+from core.audio_provider import AudioProvider
 
 # Import the real OpenAI client for testing
 try:
@@ -31,6 +32,14 @@ class DummyProvider(VocabProvider):
             sentence=f"S {term}",
             sentence_translation=f"ST {term}",
         )
+
+
+class DummyAudioProvider(AudioProvider):
+    def get_audio(self, text: str) -> bytes:
+        return b"dummy"
+
+    def get_file_name(self, base: str) -> str:
+        return f"{base}_dummy.mp3"
 
 
 def test_german_card_openai_integration():
@@ -57,7 +66,8 @@ def test_german_card_openai_integration():
         card = GermanCard.create_from_user_input(
             term=test_term,
             context=test_context,
-            vocab_provider=vocab_provider
+            vocab_provider=vocab_provider,
+            audio_provider=DummyAudioProvider()
         )
         
         # Verify the card was created successfully

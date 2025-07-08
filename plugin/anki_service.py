@@ -1,5 +1,4 @@
 import os
-import shutil
 from core.audio_card import AudioCard
 
 class AnkiService:
@@ -17,14 +16,13 @@ class AnkiService:
             return model
         # Create new model
         model = self.mw.col.models.new(model_name)
-        fields_names = card.get_model_fields_names()
-        if not fields_names or not hasattr(fields_names, '__iter__'):
-            raise ValueError("get_model_fields_names() must return an iterable of field names")
-        for field in fields_names:
+        fields_map = card.get_fields()
+        for field in fields_map.keys():
             self.mw.col.models.add_field(model, self.mw.col.models.new_field(field))
+        template_data = card.get_template()
         template = self.mw.col.models.new_template(card.get_template_name())
-        template['qfmt'] = card.get_qfmt_template()
-        template['afmt'] = card.get_afmt_template()
+        template['qfmt'] = template_data.get('qfmt', '')
+        template['afmt'] = template_data.get('afmt', '')
         self.mw.col.models.add_template(model, template)
         self.mw.col.models.add(model)
         return model
@@ -59,10 +57,8 @@ class AnkiService:
         """
         model = self._ensure_model_exists(card)
         note = self.mw.col.new_note(model)
-        fields = card.to_fields_list()
-        if not isinstance(fields, list):
-            raise ValueError("to_fields_list() must return a list")
-        for i, value in enumerate(fields):
+        fields_map = card.get_fields()
+        for i, value in enumerate(fields_map.values()):
             note.fields[i] = value
         self.mw.col.add_note(note, deck_id)
         self.mw.col.save()

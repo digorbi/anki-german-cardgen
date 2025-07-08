@@ -7,23 +7,17 @@ class AudioCard(ABC):
         pass
 
     @abstractmethod
-    def get_model_fields_names(self) -> list:
-        pass
-
-    @abstractmethod
     def get_template_name(self) -> str:
         pass
 
     @abstractmethod
-    def get_qfmt_template(self) -> str:
+    def get_fields(self) -> dict:
+        """Return mapping of field names to values."""
         pass
 
     @abstractmethod
-    def get_afmt_template(self) -> str:
-        pass
-
-    @abstractmethod
-    def to_fields_list(self) -> list:
+    def get_template(self) -> dict:
+        """Return mapping with 'qfmt' and 'afmt' template strings."""
         pass
 
     @abstractmethod

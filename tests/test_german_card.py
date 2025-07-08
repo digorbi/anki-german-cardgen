@@ -4,6 +4,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 from core.german_card import GermanCard
 from core.vocab_provider import VocabProvider, VocabItem
+from core.audio_provider import AudioProvider
 
 
 class DummyProvider(VocabProvider):
@@ -14,6 +15,13 @@ class DummyProvider(VocabProvider):
             sentence=f"S {term}",
             sentence_translation=f"ST {term}",
         )
+
+class DummyAudioProvider(AudioProvider):
+    def get_audio(self, text: str) -> bytes:
+        return b"dummy"
+
+    def get_file_name(self, base: str) -> str:
+        return f"{base}_dummy.mp3"
 
 def test_german_card_creation():
     card = GermanCard(
@@ -80,13 +88,15 @@ def test_gen_id():
 
 def test_create_from_user_input():
     card = GermanCard.create_from_user_input(
-        "Hund", "", DummyProvider()
+        "Hund", "", DummyProvider(), DummyAudioProvider()
     )
     assert card.term == "Hund"
     assert card.context == ""
     assert card.sentence == "S Hund"
     assert card.term_translation == "Hund_t"
     assert card.sentence_translation == "ST Hund"
+    assert card.get_audio_data() == b"dummy"
+    assert card.get_audio_filename().endswith("_dummy.mp3")
 
 if __name__ == "__main__":
     test_german_card_creation()
