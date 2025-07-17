@@ -64,8 +64,8 @@ def generate_card() -> None:
             show_warning("Invalid card data.")
             return
 
-        preview_result = show_card_preview_dialog(mw, card)
-        if preview_result == CardPreviewResult.SAVE:
+        preview_dialog_result = show_card_preview_dialog(mw, card)
+        if preview_dialog_result.result == CardPreviewResult.SAVE:
             anki_service = AnkiService(mw)
             try:
                 anki_service.save_card(card, result.selected_deck_id)
@@ -74,9 +74,12 @@ def generate_card() -> None:
             except Exception as e:
                 show_warning(f"Failed to create card: {str(e)}")
                 return
-        elif preview_result == CardPreviewResult.CANCEL:
+        elif preview_dialog_result.result == CardPreviewResult.CANCEL:
             return
-        elif preview_result == CardPreviewResult.REGENERATE:
+        elif preview_dialog_result.result == CardPreviewResult.REGENERATE:
+            # Update context if provided
+            if preview_dialog_result.updated_context is not None:
+                result.context = preview_dialog_result.updated_context
             continue
 
 action = QAction("German Card", mw)

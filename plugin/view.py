@@ -33,6 +33,11 @@ class SettingsResult:
     api_key: str
     target_language: str
 
+@dataclass
+class CardPreviewDialogResult:
+    result: CardPreviewResult
+    updated_context: Optional[str] = None
+
 
 def get_settings_dialog(
     mw: Any,
@@ -140,13 +145,16 @@ def show_info(message: str) -> None:
 def show_warning(message: str) -> None:
     showWarning(message)
 
-def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewResult:
+def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewDialogResult:
     """
     Show a preview dialog of the card before saving.
     Returns:
-        CardPreviewResult.SAVE: User accepted the card
-        CardPreviewResult.CANCEL: User canceled card creation
-        CardPreviewResult.REGENERATE: User requested to regenerate the card
+        CardPreviewDialogResult with:
+        - result: One of:
+            CardPreviewResult.SAVE: User accepted the card
+            CardPreviewResult.CANCEL: User canceled card creation
+            CardPreviewResult.REGENERATE: User requested to regenerate the card
+        - updated_context: The updated context when result is REGENERATE, None otherwise
     """
     dialog = QDialog(mw)
     dialog.setWindowTitle("Card Preview")
@@ -158,10 +166,8 @@ def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewResult:
     front_group = QVBoxLayout()
     front_label = QLabel("<b>Front:</b>")
     front_content = QLabel(
-        f"<div style='padding: 10px; background: #f5f5f5; border: 1px solid #ddd;'>"
-        f"<div style='font-size: 18px;'>{card.term}</div>"
+        f"<div><b>{card.term}</b></div>"
         f"<div>{card.sentence}</div>"
-        f"</div>"
     )
     front_content.setWordWrap(True)
     front_group.addWidget(front_label)
@@ -172,18 +178,26 @@ def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewResult:
     back_group = QVBoxLayout()
     back_label = QLabel("<b>Back:</b>")
     back_content = QLabel(
-        f"<div style='padding: 10px; background: #f5f5f5; border: 1px solid #ddd;'>"
-        f"<div style='font-size: 18px;'>{card.term}</div>"
-        f"<div style='color: #2962ff;'>{card.term_translation}</div>"
+        f"<div><b>{card.term}</b></div>"
+        f"<div>{card.term_translation}</div>"
         f"<div>{card.sentence}</div>"
-        f"<div style='color: #2962ff;'>{card.sentence_translation}</div>"
-        f"<div style='margin-top: 10px; font-style: italic;'>{card.context}</div>"
-        f"</div>"
+        f"<div>{card.sentence_translation}</div>"
+        f"<div><i>{card.context}</i></div>"
     )
     back_content.setWordWrap(True)
     back_group.addWidget(back_label)
     back_group.addWidget(back_content)
     layout.addLayout(back_group)
+
+    # Context input for regeneration
+    context_group = QVBoxLayout()
+    context_label = QLabel("<b>Context (edit to regenerate with new context):</b>")
+    context_input = QTextEdit()
+    context_input.setPlainText(card.context)
+    context_input.setMinimumHeight(80)
+    context_group.addWidget(context_label)
+    context_group.addWidget(context_input)
+    layout.addLayout(context_group)
 
     # Buttons
     button_layout = QHBoxLayout()
@@ -199,6 +213,7 @@ def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewResult:
 
     # Store the result
     result = CardPreviewResult.CANCEL  # Default result if dialog is closed
+    updated_context = None
 
     def on_save() -> None:
         nonlocal result
@@ -206,8 +221,9 @@ def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewResult:
         dialog.accept()
 
     def on_regenerate() -> None:
-        nonlocal result
+        nonlocal result, updated_context
         result = CardPreviewResult.REGENERATE
+        updated_context = context_input.toPlainText().strip()
         dialog.accept()
 
     def on_cancel() -> None:
@@ -220,4 +236,4 @@ def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewResult:
     cancel_button.clicked.connect(on_cancel)
 
     dialog.exec()
-    return result
+    return CardPreviewDialogResult(result=result, updated_context=updated_context)
