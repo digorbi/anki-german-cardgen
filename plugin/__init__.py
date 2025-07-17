@@ -16,6 +16,9 @@ from core.gtts_audio_provider import GttsAudioProvider
 from core.openai_vocab_provider import OpenaiVocabProvider
 
 from .anki_service import AnkiService
+
+MODEL_NAME = "German Contextual Vocab"
+TEMPLATE_NAME = "Contextual Audio Card"
 from .view import (
     SettingsResult,
     get_card_input_dialog,
@@ -61,7 +64,7 @@ def generate_card() -> None:
         show_warning("Invalid card data.")
         return
 
-    anki_service = AnkiService(mw)
+    anki_service = AnkiService(mw, MODEL_NAME, TEMPLATE_NAME)
     try:
         anki_service.save_card(card, result.selected_deck_id)
         show_info(f"German card created: {card.term}")

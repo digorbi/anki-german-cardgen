@@ -44,13 +44,6 @@ class GermanCard:
     def is_valid(self) -> bool:
         return bool(self._id)
 
-    # AudioCard interface implementation
-    def get_model_name(self) -> str:
-        return "German Contextual Vocab"
-
-    def get_template_name(self) -> str:
-        return "Contextual Audio Card"
-
     def get_fields(self) -> dict[str, str]:
         if self._audio_filename:
             audio_field = f"[sound:{self._audio_filename}]"
