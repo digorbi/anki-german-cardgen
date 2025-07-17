@@ -17,13 +17,15 @@ from core.openai_vocab_provider import OpenaiVocabProvider
 
 from .anki_service import AnkiService
 from .view import (
+    CardPreviewResult,
     SettingsResult,
     get_card_input_dialog,
     get_settings_dialog,
+    show_card_preview_dialog,
     show_info,
     show_warning,
-    show_card_preview_dialog,
 )
+
 
 def ensure_settings() -> Optional[SettingsResult]:
     """Return API key and target language from config, prompting the user if needed."""
@@ -62,9 +64,8 @@ def generate_card() -> None:
             show_warning("Invalid card data.")
             return
 
-        # Show preview and get user decision
-        if show_card_preview_dialog(mw, card):
-            # User accepted the card, save it
+        preview_result = show_card_preview_dialog(mw, card)
+        if preview_result == CardPreviewResult.SAVE:
             anki_service = AnkiService(mw)
             try:
                 anki_service.save_card(card, result.selected_deck_id)
@@ -73,8 +74,9 @@ def generate_card() -> None:
             except Exception as e:
                 show_warning(f"Failed to create card: {str(e)}")
                 return
-        else:
-            # User wants to regenerate
+        elif preview_result == CardPreviewResult.CANCEL:
+            return
+        elif preview_result == CardPreviewResult.REGENERATE:
             continue
 
 action = QAction("German Card", mw)
