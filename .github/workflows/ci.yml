@@ -29,7 +29,7 @@ jobs:
       - name: Run unit tests
         run: pytest --disable-warnings
       - name: Run integration tests
-        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: pytest --disable-warnings -m integration
