@@ -20,9 +20,11 @@ from .anki_service import AnkiService
 MODEL_NAME = "German Contextual Vocab"
 TEMPLATE_NAME = "Contextual Audio Card"
 from .view import (
+    CardPreviewResult,
     SettingsResult,
     get_card_input_dialog,
     get_settings_dialog,
+    show_card_preview_dialog,
     show_info,
     show_warning,
 )
@@ -54,22 +56,34 @@ def generate_card() -> None:
     if not result:
         return
 
-    vocab_provider = OpenaiVocabProvider(settings.api_key, settings.target_language)
-    audio_provider = GttsAudioProvider("de")
+    while True:  # Allow regeneration loop
+        vocab_provider = OpenaiVocabProvider(settings.api_key, settings.target_language)
+        audio_provider = GttsAudioProvider("de")
 
-    card = GermanCard.create_from_user_input(
-        result.term, result.context, vocab_provider, audio_provider
-    )
-    if not card.is_valid():
-        show_warning("Invalid card data.")
-        return
+        card = GermanCard.create_from_user_input(
+            result.term, result.context, vocab_provider, audio_provider
+        )
+        if not card.is_valid():
+            show_warning("Invalid card data.")
+            return
 
-    anki_service = AnkiService(mw, MODEL_NAME, TEMPLATE_NAME)
-    try:
-        anki_service.save_card(card, result.selected_deck_id)
-        show_info(f"German card created: {card.term}")
-    except Exception as e:
-        show_warning(f"Failed to create card: {str(e)}")
+        preview_dialog_result = show_card_preview_dialog(mw, card)
+        if preview_dialog_result.result == CardPreviewResult.SAVE:
+            try:
+                anki_service = AnkiService(mw, MODEL_NAME, TEMPLATE_NAME)
+                anki_service.save_card(card, result.selected_deck_id)
+                show_info(f"German card created: {card.term}")
+                return
+            except Exception as e:
+                show_warning(f"Failed to create card: {str(e)}")
+                return
+        elif preview_dialog_result.result == CardPreviewResult.CANCEL:
+            return
+        elif preview_dialog_result.result == CardPreviewResult.REGENERATE:
+            # Update context if provided
+            if preview_dialog_result.updated_context is not None:
+                result.context = preview_dialog_result.updated_context
+            continue
 
 action = QAction("German Card", mw)
 action.triggered.connect(generate_card)

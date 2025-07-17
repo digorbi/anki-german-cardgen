@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum, auto
 from typing import Any, Optional
 
 from aqt.qt import (  # type: ignore
@@ -13,6 +14,13 @@ from aqt.qt import (  # type: ignore
 )
 from aqt.utils import showInfo, showWarning  # type: ignore
 
+from core.german_card import GermanCard
+
+
+class CardPreviewResult(Enum):
+    SAVE = auto()
+    CANCEL = auto()
+    REGENERATE = auto()
 
 @dataclass
 class CardInputResult:
@@ -24,6 +32,11 @@ class CardInputResult:
 class SettingsResult:
     api_key: str
     target_language: str
+
+@dataclass
+class CardPreviewDialogResult:
+    result: CardPreviewResult
+    updated_context: Optional[str] = None
 
 
 def get_settings_dialog(
@@ -131,3 +144,96 @@ def show_info(message: str) -> None:
 
 def show_warning(message: str) -> None:
     showWarning(message)
+
+def show_card_preview_dialog(mw: Any, card: GermanCard) -> CardPreviewDialogResult:
+    """
+    Show a preview dialog of the card before saving.
+    Returns:
+        CardPreviewDialogResult with:
+        - result: One of:
+            CardPreviewResult.SAVE: User accepted the card
+            CardPreviewResult.CANCEL: User canceled card creation
+            CardPreviewResult.REGENERATE: User requested to regenerate the card
+        - updated_context: The updated context when result is REGENERATE, None otherwise
+    """
+    dialog = QDialog(mw)
+    dialog.setWindowTitle("Card Preview")
+    dialog.setMinimumWidth(400)
+
+    layout = QVBoxLayout()
+
+    # Front preview
+    front_group = QVBoxLayout()
+    front_label = QLabel("<b>Front:</b>")
+    front_content = QLabel(
+        f"<div><b>{card.term}</b></div>"
+        f"<div>{card.sentence}</div>"
+    )
+    front_content.setWordWrap(True)
+    front_group.addWidget(front_label)
+    front_group.addWidget(front_content)
+    layout.addLayout(front_group)
+
+    # Back preview
+    back_group = QVBoxLayout()
+    back_label = QLabel("<b>Back:</b>")
+    back_content = QLabel(
+        f"<div><b>{card.term}</b></div>"
+        f"<div>{card.term_translation}</div>"
+        f"<div>{card.sentence}</div>"
+        f"<div>{card.sentence_translation}</div>"
+        f"<div><i>{card.context}</i></div>"
+    )
+    back_content.setWordWrap(True)
+    back_group.addWidget(back_label)
+    back_group.addWidget(back_content)
+    layout.addLayout(back_group)
+
+    # Context input for regeneration
+    context_group = QVBoxLayout()
+    context_label = QLabel("<b>Context (edit to regenerate with new context):</b>")
+    context_input = QTextEdit()
+    context_input.setPlainText(card.context)
+    context_input.setMinimumHeight(80)
+    context_group.addWidget(context_label)
+    context_group.addWidget(context_input)
+    layout.addLayout(context_group)
+
+    # Buttons
+    button_layout = QHBoxLayout()
+    save_button = QPushButton("Save Card")
+    regenerate_button = QPushButton("Regenerate")
+    cancel_button = QPushButton("Cancel")
+    button_layout.addWidget(save_button)
+    button_layout.addWidget(regenerate_button)
+    button_layout.addWidget(cancel_button)
+    layout.addLayout(button_layout)
+
+    dialog.setLayout(layout)
+
+    # Store the result
+    result = CardPreviewResult.CANCEL  # Default result if dialog is closed
+    updated_context = None
+
+    def on_save() -> None:
+        nonlocal result
+        result = CardPreviewResult.SAVE
+        dialog.accept()
+
+    def on_regenerate() -> None:
+        nonlocal result, updated_context
+        result = CardPreviewResult.REGENERATE
+        updated_context = context_input.toPlainText().strip()
+        dialog.accept()
+
+    def on_cancel() -> None:
+        nonlocal result
+        result = CardPreviewResult.CANCEL
+        dialog.accept()
+
+    save_button.clicked.connect(on_save)
+    regenerate_button.clicked.connect(on_regenerate)
+    cancel_button.clicked.connect(on_cancel)
+
+    dialog.exec()
+    return CardPreviewDialogResult(result=result, updated_context=updated_context)
