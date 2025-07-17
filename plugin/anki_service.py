@@ -5,8 +5,10 @@ from core.audio_card import AudioCard
 
 
 class AnkiService:
-    def __init__(self, mw: Any) -> None:
+    def __init__(self, mw: Any, model_name: str, template_name: str) -> None:
         self.mw = mw
+        self.model_name = model_name
+        self.template_name = template_name
 
     def _ensure_model_exists(self, card: AudioCard) -> Any:
         """
@@ -14,17 +16,16 @@ class AnkiService:
         necessary.
         Returns the model.
         """
-        model_name = card.get_model_name()
-        model = self.mw.col.models.by_name(model_name)
+        model = self.mw.col.models.by_name(self.model_name)
         if model:
             return model
         # Create new model
-        model = self.mw.col.models.new(model_name)
+        model = self.mw.col.models.new(self.model_name)
         fields_map = card.get_fields()
         for field in fields_map.keys():
             self.mw.col.models.add_field(model, self.mw.col.models.new_field(field))
         template_data = card.get_template()
-        template = self.mw.col.models.new_template(card.get_template_name())
+        template = self.mw.col.models.new_template(self.template_name)
         template['qfmt'] = template_data.get('qfmt', '')
         template['afmt'] = template_data.get('afmt', '')
         self.mw.col.models.add_template(model, template)
