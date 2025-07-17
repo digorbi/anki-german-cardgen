@@ -9,7 +9,7 @@
 - [X] FR2: User can input a word + optional context
 - [X] FR3: Plugin detects word type (noun, verb, adjective, phrase)
 - [X] FR4: Plugin generates tailored example sentence(s) using OpenAI
-- [ ] FR5: Card template adapts based on word type
+- [ ] FR5: Support one more card template to focus on a word usage in a sentence
 - [X] FR6: User can regenerate content before saving
 - [X] FR7: Audio is generated via gTTS and attached to the card
 - [X] FR8: User can configure API key and language settings
