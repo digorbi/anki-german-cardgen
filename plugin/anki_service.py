@@ -1,5 +1,5 @@
 import os
-from typing import Any, Tuple
+from typing import Any
 
 from core.audio_card import AudioCard
 
@@ -50,9 +50,10 @@ class AnkiService:
         except Exception:
             pass
 
-    def _delete_duplicated_cards(self, card_id: Tuple[str, str]) -> int:
+    def _delete_duplicated_cards(self, card_id: tuple[str, str]) -> int:
         field_name, field_value = card_id
-        note_ids = self.mw.col.find_notes(f'note:"{self.model_name}" {field_name}:"{field_value}"')
+        query = f'note:"{self.model_name}" {field_name}:"{field_value}"'
+        note_ids = self.mw.col.find_notes(query)
         if note_ids:
             self.mw.col.remove_notes(note_ids)
             self.mw.col.save()

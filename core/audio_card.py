@@ -1,11 +1,11 @@
 """Protocol defining the minimal interface for audio-based cards."""
 
-from typing import Optional, Protocol, Tuple, runtime_checkable
+from typing import Optional, Protocol, runtime_checkable
 
 
 @runtime_checkable
 class AudioCard(Protocol):
-    def get_unique_id(self) -> Tuple[str, str]:
+    def get_unique_id(self) -> tuple[str, str]:
         """Return a unique identifier for the card.
         Represented as a tuple of a field name and value."""
         ...
