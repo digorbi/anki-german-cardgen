@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import re
-from typing import Optional
+from typing import Optional, Tuple
 
 from .audio_provider import AudioProvider
 from .vocab_provider import VocabProvider
@@ -40,6 +40,9 @@ class GermanCard:
         # Remove any remaining special characters and keep only alphanumeric
         # and underscores
         return re.sub(r'[^a-z0-9_]', '', id_base)
+
+    def get_unique_id(self) -> Tuple[str, str]:
+        return "id", self._id
 
     def is_valid(self) -> bool:
         return bool(self._id)

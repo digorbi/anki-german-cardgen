@@ -1,5 +1,5 @@
 import os
-from typing import Any
+from typing import Any, Tuple
 
 from core.audio_card import AudioCard
 
@@ -50,11 +50,23 @@ class AnkiService:
         except Exception:
             pass
 
-    def save_card(self, card: AudioCard, deck_id: Any) -> Any:
+    def _delete_duplicated_cards(self, card_id: Tuple[str, str]) -> int:
+        field_name, field_value = card_id
+        note_ids = self.mw.col.find_notes(f'note:"{self.model_name}" {field_name}:"{field_value}"')
+        if note_ids:
+            self.mw.col.remove_notes(note_ids)
+            self.mw.col.save()
+
+        return len(note_ids)
+
+    def save_card(self, card: AudioCard, deck_id: Any) -> int:
         """
         Save an AudioCard to Anki in the specified deck.
+        Replaces all cards with the same card ID and returns the number of removed.
         """
         model = self._ensure_model_exists(card)
+        removed = self._delete_duplicated_cards(card.get_unique_id())
+
         note = self.mw.col.new_note(model)
         fields_map = card.get_fields()
         for i, value in enumerate(fields_map.values()):
@@ -62,4 +74,4 @@ class AnkiService:
         self.mw.col.add_note(note, deck_id)
         self.mw.col.save()
         self._save_card_audio_to_media(card)
-        return note
+        return removed

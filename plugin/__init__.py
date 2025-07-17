@@ -71,8 +71,11 @@ def generate_card() -> None:
         if preview_dialog_result.result == CardPreviewResult.SAVE:
             try:
                 anki_service = AnkiService(mw, MODEL_NAME, TEMPLATE_NAME)
-                anki_service.save_card(card, result.selected_deck_id)
-                show_info(f"German card created: {card.term}")
+                removed = anki_service.save_card(card, result.selected_deck_id)
+                success_message = f"German card created: {card.term}"
+                if removed:
+                    success_message += f", Removed duplicate cards: {removed}"
+                show_info(success_message)
                 return
             except Exception as e:
                 show_warning(f"Failed to create card: {str(e)}")
