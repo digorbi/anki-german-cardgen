@@ -22,8 +22,8 @@ from .view import (
     get_settings_dialog,
     show_info,
     show_warning,
+    show_card_preview_dialog,
 )
-
 
 def ensure_settings() -> Optional[SettingsResult]:
     """Return API key and target language from config, prompting the user if needed."""
@@ -51,22 +51,31 @@ def generate_card() -> None:
     if not result:
         return
 
-    vocab_provider = OpenaiVocabProvider(settings.api_key, settings.target_language)
-    audio_provider = GttsAudioProvider("de")
+    while True:  # Allow regeneration loop
+        vocab_provider = OpenaiVocabProvider(settings.api_key, settings.target_language)
+        audio_provider = GttsAudioProvider("de")
 
-    card = GermanCard.create_from_user_input(
-        result.term, result.context, vocab_provider, audio_provider
-    )
-    if not card.is_valid():
-        show_warning("Invalid card data.")
-        return
+        card = GermanCard.create_from_user_input(
+            result.term, result.context, vocab_provider, audio_provider
+        )
+        if not card.is_valid():
+            show_warning("Invalid card data.")
+            return
 
-    anki_service = AnkiService(mw)
-    try:
-        anki_service.save_card(card, result.selected_deck_id)
-        show_info(f"German card created: {card.term}")
-    except Exception as e:
-        show_warning(f"Failed to create card: {str(e)}")
+        # Show preview and get user decision
+        if show_card_preview_dialog(mw, card):
+            # User accepted the card, save it
+            anki_service = AnkiService(mw)
+            try:
+                anki_service.save_card(card, result.selected_deck_id)
+                show_info(f"German card created: {card.term}")
+                return
+            except Exception as e:
+                show_warning(f"Failed to create card: {str(e)}")
+                return
+        else:
+            # User wants to regenerate
+            continue
 
 action = QAction("German Card", mw)
 action.triggered.connect(generate_card)
