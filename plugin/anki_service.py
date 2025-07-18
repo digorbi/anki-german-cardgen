@@ -19,15 +19,20 @@ class AnkiService:
         model = self.mw.col.models.by_name(self.model_name)
         if model:
             return model
-        # Create new model
+
+        # Create a new model and add fields
         model = self.mw.col.models.new(self.model_name)
         fields_map = card.get_fields()
         for field in fields_map.keys():
             self.mw.col.models.add_field(model, self.mw.col.models.new_field(field))
+
+        # Decorate model
         template_data = card.get_template()
+        model['css'] = template_data.get('css', '')
         template = self.mw.col.models.new_template(self.template_name)
         template['qfmt'] = template_data.get('qfmt', '')
         template['afmt'] = template_data.get('afmt', '')
+
         self.mw.col.models.add_template(model, template)
         self.mw.col.models.add(model)
         return model

@@ -37,17 +37,17 @@ cp plugin/*.py "$ANKI_ADDONS_DIR/"
 cp plugin/*.json "$ANKI_ADDONS_DIR/"
 cp plugin/*.md "$ANKI_ADDONS_DIR/"
 
-# Copy vendor directory if it exists (bundled dependencies)
-if [ -d "plugin/vendor" ]; then
-    echo -e "${YELLOW}Copying bundled dependencies...${NC}"
-    cp -r plugin/vendor "$ANKI_ADDONS_DIR/"
-fi
+# Copy vendor directory (bundled dependencies)
+echo -e "${YELLOW}Copying bundled dependencies...${NC}"
+cp -r plugin/vendor "$ANKI_ADDONS_DIR/"
 
 # Copy prompts directory (prompt templates)
-if [ -d "prompts" ]; then
-    echo -e "${YELLOW}Copying prompts directory...${NC}"
-    cp -r prompts "$ANKI_ADDONS_DIR/"
-fi
+echo -e "${YELLOW}Copying prompts directory...${NC}"
+cp -r prompts "$ANKI_ADDONS_DIR/"
+
+# Copy templates directory (card templates)
+echo -e "${YELLOW}Copying templates directory...${NC}"
+cp -r templates "$ANKI_ADDONS_DIR/"
 
 echo -e "${GREEN}Plugin deployed successfully!${NC}"
 echo -e "${YELLOW}Please restart Anki to load the updated plugin.${NC}" 

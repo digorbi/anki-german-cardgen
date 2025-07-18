@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 from typing import Optional
 
@@ -15,10 +16,14 @@ class GermanCard:
         'ß': 'ss',
     }
 
+    CARD_TEMPLATE_WORD = "german_card_word"
+    CARD_TEMPLATE_SENTENCE = "german_card_sentence"
+
     def __init__(
         self,
         term: str,
         context: str,
+        template: str = CARD_TEMPLATE_WORD,
     ):
         self._id = self._gen_id(term)
         self.term = term
@@ -28,6 +33,20 @@ class GermanCard:
         self.sentence = ""
         self.term_translation = ""
         self.sentence_translation = ""
+
+        #Load templates
+        templates_dir = os.path.join(
+            os.path.dirname(__file__), "..", "templates", template
+        )
+        self._front_template = self._load_template(templates_dir, "front.html")
+        self._back_template = self._load_template(templates_dir, "back.html")
+        self._style_template = self._load_template(templates_dir, "style.css")
+
+    @staticmethod
+    def _load_template(directory: str, filename: str) -> str:
+        path = os.path.join(directory, filename)
+        with open(path, encoding="utf-8") as fh:
+            return fh.read()
 
     def _gen_id(self, term: str) -> str:
         """Generate ID based on term value by converting to lowercase and
@@ -64,19 +83,9 @@ class GermanCard:
 
     def get_template(self) -> dict[str, str]:
         return {
-            "qfmt": """
-<div class="term">{{term}}</div>
-<div class="sentence">{{sentence}}</div>
-{{sentence_audio}}
-""",
-            "afmt": """
-<div class="term">{{term}}</div>
-<div class="term-translation">{{term_translation}}</div>
-<div class="sentence">{{sentence}}</div>
-<div class="sentence-translation">{{sentence_translation}}</div>
-{{sentence_audio}}
-<div class="context">{{context}}</div>
-""",
+            "qfmt": self._front_template,
+            "afmt": self._back_template,
+            "css": self._style_template,
         }
 
     def get_audio_data(self) -> Optional[bytes]:
