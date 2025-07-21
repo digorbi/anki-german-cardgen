@@ -35,6 +35,7 @@ def ensure_settings() -> Optional[SettingsResult]:
     config = mw.addonManager.getConfig(__name__) or {}
     api_key = config.get("openai_api_key", "")
     target_language = config.get("target_language", "")
+    desired_template = config.get("desired_template", "")
     if not api_key or not target_language:
         result = get_settings_dialog(mw, api_key, target_language or "English")
         if not result:
@@ -42,9 +43,10 @@ def ensure_settings() -> Optional[SettingsResult]:
 
         config["openai_api_key"] = result.api_key
         config["target_language"] = result.target_language
+        config["desired_template"] = result.desired_template
         mw.addonManager.writeConfig(__name__, config)
     # If config is present, construct a SettingsResult
-    return SettingsResult(api_key=api_key, target_language=target_language)
+    return SettingsResult(api_key=api_key, target_language=target_language, desired_template=desired_template)
 
 def generate_card() -> None:
     settings = ensure_settings()
@@ -61,7 +63,7 @@ def generate_card() -> None:
         audio_provider = GttsAudioProvider("de")
 
         card = GermanCard.create_from_user_input(
-            result.term, result.context, vocab_provider, audio_provider
+            result.term, result.context, vocab_provider, audio_provider, settings.desired_template
         )
         if not card.is_valid():
             show_warning("Invalid card data.")

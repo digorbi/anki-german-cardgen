@@ -101,11 +101,12 @@ class GermanCard:
         context: str,
         vocab_provider: VocabProvider,
         audio_provider: AudioProvider,
+        template: str = CARD_TEMPLATE_WORD
     ) -> GermanCard:
         """Create a card using vocabulary data from ``vocab_provider``."""
 
         data = vocab_provider.get_vocab(term, context)
-        card = cls(data.term, context)
+        card = cls(data.term, context, template)
         card.sentence = data.sentence
         card.term_translation = data.term_translation
         card.sentence_translation = data.sentence_translation

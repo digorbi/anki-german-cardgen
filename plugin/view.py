@@ -32,6 +32,7 @@ class CardInputResult:
 class SettingsResult:
     api_key: str
     target_language: str
+    desired_template: str
 
 @dataclass
 class CardPreviewDialogResult:
@@ -60,6 +61,14 @@ def get_settings_dialog(
     layout.addWidget(lang_label)
     layout.addWidget(lang_input)
 
+    # Template selection
+    template_label = QLabel("Select template:")
+    template_combo = QComboBox()
+    template_combo.addItem("Word Template", GermanCard.CARD_TEMPLATE_WORD)
+    template_combo.addItem("Sentence Template", GermanCard.CARD_TEMPLATE_SENTENCE)
+    layout.addWidget(template_label)
+    layout.addWidget(template_combo)
+
     buttons = QHBoxLayout()
     ok_button = QPushButton("Save")
     cancel_button = QPushButton("Cancel")
@@ -75,7 +84,8 @@ def get_settings_dialog(
 
     return SettingsResult(
         api_key=key_input.text().strip(),
-        target_language=lang_input.text().strip()
+        target_language=lang_input.text().strip(),
+        desired_template=template_combo.currentData()
     )
 
 def get_card_input_dialog(mw: Any) -> Optional[CardInputResult]:
@@ -137,7 +147,8 @@ def get_card_input_dialog(mw: Any) -> Optional[CardInputResult]:
     term = term_input.text().strip()
     context = context_input.toPlainText().strip()
     selected_deck_id = deck_combo.currentData()
-    return CardInputResult(term, selected_deck_id, context)
+    selected_template = template_combo.currentData()
+    return CardInputResult(term, selected_deck_id, context, selected_template)
 
 def show_info(message: str) -> None:
     showInfo(message)
