@@ -147,8 +147,7 @@ def get_card_input_dialog(mw: Any) -> Optional[CardInputResult]:
     term = term_input.text().strip()
     context = context_input.toPlainText().strip()
     selected_deck_id = deck_combo.currentData()
-    selected_template = template_combo.currentData()
-    return CardInputResult(term, selected_deck_id, context, selected_template)
+    return CardInputResult(term, selected_deck_id, context)
 
 def show_info(message: str) -> None:
     showInfo(message)

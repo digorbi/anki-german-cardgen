@@ -33,6 +33,11 @@ def test_german_card_creation():
     assert card.context == "Das Haus ist groß."
     assert card.get_audio_filename() == ""
     assert card.is_valid()
+    # Test that default template is used
+    template_data = card.get_template()
+    assert "qfmt" in template_data
+    assert "afmt" in template_data
+    assert "css" in template_data
 
 def test_german_card_invalid():
     card = GermanCard(term="", context="Test")
@@ -89,6 +94,7 @@ def test_gen_id():
         )
 
 def test_create_from_user_input():
+    # Test with default template
     card = GermanCard.create_from_user_input(
         "Hund", "", DummyProvider(), DummyAudioProvider()
     )
@@ -100,8 +106,53 @@ def test_create_from_user_input():
     assert card.get_audio_data() == b"dummy"
     assert card.get_audio_filename().endswith("_dummy.mp3")
 
+    # Test with custom template
+    card_sentence = GermanCard.create_from_user_input(
+        "Katze", "context", DummyProvider(), DummyAudioProvider(),
+        template=GermanCard.CARD_TEMPLATE_SENTENCE
+    )
+    assert card_sentence.term == "Katze"
+    assert card_sentence.context == "context"
+    template_data = card_sentence.get_template()
+    assert "qfmt" in template_data
+    assert "afmt" in template_data
+    assert "css" in template_data
+
+def test_template_parameter():
+    """Test GermanCard constructor with different template parameters"""
+    # Test with default template (CARD_TEMPLATE_WORD)
+    card_default = GermanCard(term="Test", context="context")
+    template_data = card_default.get_template()
+    assert "qfmt" in template_data
+    assert "afmt" in template_data
+    assert "css" in template_data
+
+    # Test with explicit word template
+    card_word = GermanCard(
+        term="Wort",
+        context="context",
+        template=GermanCard.CARD_TEMPLATE_WORD
+    )
+    template_data_word = card_word.get_template()
+    assert "qfmt" in template_data_word
+    assert "afmt" in template_data_word
+    assert "css" in template_data_word
+
+    # Test with sentence template
+    card_sentence = GermanCard(
+        term="Satz",
+        context="context",
+        template=GermanCard.CARD_TEMPLATE_SENTENCE
+    )
+    template_data_sentence = card_sentence.get_template()
+    assert "qfmt" in template_data_sentence
+    assert "afmt" in template_data_sentence
+    assert "css" in template_data_sentence
+
 if __name__ == "__main__":
     test_german_card_creation()
     test_german_card_invalid()
     test_gen_id()
+    test_create_from_user_input()
+    test_template_parameter()
     print("All tests passed!")

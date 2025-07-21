@@ -46,7 +46,11 @@ def ensure_settings() -> Optional[SettingsResult]:
         config["desired_template"] = result.desired_template
         mw.addonManager.writeConfig(__name__, config)
     # If config is present, construct a SettingsResult
-    return SettingsResult(api_key=api_key, target_language=target_language, desired_template=desired_template)
+    return SettingsResult(
+        api_key=api_key,
+        target_language=target_language,
+        desired_template=desired_template
+    )
 
 def generate_card() -> None:
     settings = ensure_settings()
@@ -63,7 +67,11 @@ def generate_card() -> None:
         audio_provider = GttsAudioProvider("de")
 
         card = GermanCard.create_from_user_input(
-            result.term, result.context, vocab_provider, audio_provider, settings.desired_template
+            result.term,
+            result.context,
+            vocab_provider,
+            audio_provider,
+            settings.desired_template
         )
         if not card.is_valid():
             show_warning("Invalid card data.")
