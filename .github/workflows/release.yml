@@ -11,7 +11,7 @@ jobs:
     if: github.event.base_ref == 'refs/heads/main'
     steps:
       - uses: actions/checkout@v3
-      - name: Read python version
+      - name: Read Python version
         id: pyver
         run: echo "version=$(cat .python-version)" >> $GITHUB_OUTPUT
       - name: Set up Python
@@ -25,49 +25,60 @@ jobs:
           pip install -r requirements-dev.txt
       - name: Run linter
         run: ruff check .
-      - name: Run static type checks
+      - name: Run type checks
         run: mypy .
-      - name: Run unit tests
+      - name: Run tests
         run: pytest --disable-warnings
 
-  release:
+  build-macos-intel:
     needs: test
-    runs-on: ubuntu-latest
-    if: github.event.base_ref == 'refs/heads/main'
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Set up Python
+      - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
-          python-version: '3.11'
-      
+          python-version: '3.9'
       - name: Bundle dependencies
         run: python scripts/bundle.py
-      
-      - name: Create release archive
+      - name: Create Intel build archive
         run: |
-          mkdir -p release/anki-german-cardgen
-          
-          # Copy plugin directory contents (including vendor)
-          cp -r plugin/* release/anki-german-cardgen/
-          
-          # Copy core, prompts and templates directories
-          cp -r core release/anki-german-cardgen/
-          cp -r prompts release/anki-german-cardgen/
-          cp -r templates release/anki-german-cardgen/
-          
-          # Create zip archive
-          cd release
-          zip -r anki-german-cardgen-${{ github.ref_name }}.zip anki-german-cardgen/
+          mkdir -p build/anki-german-cardgen
+          cp -r plugin/* core prompts templates build/anki-german-cardgen/
+          cd build
+          zip -r anki-german-cardgen-${{ github.ref_name }}-macos-x86_64.zip anki-german-cardgen
+
+  build-macos-arm:
+    needs: test
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.9
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+      - name: Bundle dependencies
+        run: python scripts/bundle.py
+      - name: Create ARM build archive
+        run: |
+          mkdir -p build/anki-german-cardgen
+          cp -r plugin/* core prompts templates build/anki-german-cardgen/
+          cd build
+          zip -r anki-german-cardgen-${{ github.ref_name }}-macos-arm64.zip anki-german-cardgen
+
+  release:
+    needs: [build-macos-intel, build-macos-arm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
 
       - name: Install GitHub CLI
         run: sudo apt-get update && sudo apt-get install -y gh
 
-      - name: Create GitHub Release and Upload Asset
+      - name: Publish GitHub Release
         run: |
           gh release create "${{ github.ref_name }}" \
-            --title "anki-german-cardgen-${{ github.ref_name }}" \
-            ./release/anki-german-cardgen-${{ github.ref_name }}.zip
+            --title "anki-german-cardgen ${{ github.ref_name }}" \
+            "${{ needs.build-macos.outputs.artifact-path }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
