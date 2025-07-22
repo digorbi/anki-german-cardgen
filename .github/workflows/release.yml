@@ -1,0 +1,82 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    if: github.event.base_ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Read python version
+        id: pyver
+        run: echo "version=$(cat .python-version)" >> $GITHUB_OUTPUT
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ steps.pyver.outputs.version }}
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install -r requirements-dev.txt
+      - name: Run linter
+        run: ruff check .
+      - name: Run static type checks
+        run: mypy .
+      - name: Run unit tests
+        run: pytest --disable-warnings
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    if: github.event.base_ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      
+      - name: Bundle dependencies
+        run: python scripts/bundle.py
+      
+      - name: Create release archive
+        run: |
+          mkdir -p release/anki-german-cardgen
+          
+          # Copy plugin directory contents (including vendor)
+          cp -r plugin/* release/anki-german-cardgen/
+          
+          # Copy core, prompts and templates directories
+          cp -r core release/anki-german-cardgen/
+          cp -r prompts release/anki-german-cardgen/
+          cp -r templates release/anki-german-cardgen/
+          
+          # Create zip archive
+          cd release
+          zip -r anki-german-cardgen-${{ github.ref_name }}.zip anki-german-cardgen/
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: anki-german-cardgen-${{ github.ref_name }}
+          draft: false
+          prerelease: false
+      
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release/anki-german-cardgen-${{ github.ref_name }}.zip
+          asset_name: anki-german-cardgen-${{ github.ref_name }}.zip
+          asset_content_type: application/zip
