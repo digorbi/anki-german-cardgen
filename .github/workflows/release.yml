@@ -60,24 +60,14 @@ jobs:
           # Create zip archive
           cd release
           zip -r anki-german-cardgen-${{ github.ref_name }}.zip anki-german-cardgen/
-      
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
+
+      - name: Install GitHub CLI
+        run: sudo apt-get update && sudo apt-get install -y gh
+
+      - name: Create GitHub Release and Upload Asset
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "anki-german-cardgen-${{ github.ref_name }}" \
+            ./release/anki-german-cardgen-${{ github.ref_name }}.zip
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref_name }}
-          release_name: anki-german-cardgen-${{ github.ref_name }}
-          draft: false
-          prerelease: false
-      
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/anki-german-cardgen-${{ github.ref_name }}.zip
-          asset_name: anki-german-cardgen-${{ github.ref_name }}.zip
-          asset_content_type: application/zip
