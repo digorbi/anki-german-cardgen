@@ -16,14 +16,13 @@ class GermanCard:
         'ß': 'ss',
     }
 
-    CARD_TEMPLATE_WORD = "german_card_word"
-    CARD_TEMPLATE_SENTENCE = "german_card_sentence"
+    CARD_TEMPLATE_DEFAULT = "german_card_default"
 
     def __init__(
         self,
         term: str,
         context: str,
-        template: str = CARD_TEMPLATE_WORD,
+        template: str = CARD_TEMPLATE_DEFAULT,
     ):
         self._id = self._gen_id(term)
         self.term = term
