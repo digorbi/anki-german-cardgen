@@ -36,15 +36,17 @@ jobs:
 
   build-macos-intel:
     needs: test
-    runs-on: macos-latest
+    runs-on: macos-13
     steps:
       - uses: actions/checkout@v3
       - name: Set up Python 3.9
         uses: actions/setup-python@v4
         with:
           python-version: '3.9'
+          architecture: 'x64'
       - name: Bundle dependencies
-        run: python scripts/bundle.py
+        run: |
+          arch -x86_64 python scripts/bundle.py
       - name: Create Intel build archive
         run: |
           mkdir -p build/anki-german-cardgen
