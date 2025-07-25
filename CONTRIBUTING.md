@@ -8,6 +8,18 @@ Contains the heart of the application - the card models and business logic that 
 ### 🔌 **`plugin/`** - Anki Integration Layer
 Handles all Anki-specific functionality including the user interface, plugin lifecycle, and integration with Anki's API. This is what gets installed into Anki.
 
+### 📝 **`prompts/`** - Prompt Templates
+Reusable system, user, and assistant prompts for language model interactions.
+
+### ⚙️ **`scripts/`** - Utility Scripts
+Automation helpers for bundling and deploying the plugin.
+
+### 🖌️ **`templates/`** - Card Templates
+HTML and CSS layouts used for the generated cards.
+
+### 🧪 **`tests/`** - Test Suite
+Pytest-based checks covering both the core and plugin layers.
+
 ## 🏗️ Setup
 
 ### Prerequisites
