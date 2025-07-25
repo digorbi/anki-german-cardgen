@@ -52,7 +52,7 @@ jobs:
           cd build
           zip -r anki-german-cardgen-${{ github.ref_name }}-macos-x86_64.zip anki-german-cardgen
       - name: Upload Intel build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-intel-build
           path: build/anki-german-cardgen-${{ github.ref_name }}-macos-x86_64.zip
@@ -75,7 +75,7 @@ jobs:
           cd build
           zip -r anki-german-cardgen-${{ github.ref_name }}-macos-arm64.zip anki-german-cardgen
       - name: Upload ARM build artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-arm-build
           path: build/anki-german-cardgen-${{ github.ref_name }}-macos-arm64.zip
@@ -87,13 +87,13 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download Intel build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: macos-intel-build
           path: ./build/
 
       - name: Download ARM build artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: macos-arm-build
           path: ./build/
