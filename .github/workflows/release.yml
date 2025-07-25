@@ -5,6 +5,10 @@ on:
     tags:
       - 'v*'
 
+concurrency:
+  group: release
+  cancel-in-progress: false
+
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -47,6 +51,11 @@ jobs:
           cp -r plugin/* core prompts templates build/anki-german-cardgen/
           cd build
           zip -r anki-german-cardgen-${{ github.ref_name }}-macos-x86_64.zip anki-german-cardgen
+      - name: Upload Intel build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-intel-build
+          path: build/anki-german-cardgen-${{ github.ref_name }}-macos-x86_64.zip
 
   build-macos-arm:
     needs: test
@@ -65,12 +74,29 @@ jobs:
           cp -r plugin/* core prompts templates build/anki-german-cardgen/
           cd build
           zip -r anki-german-cardgen-${{ github.ref_name }}-macos-arm64.zip anki-german-cardgen
+      - name: Upload ARM build artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: macos-arm-build
+          path: build/anki-german-cardgen-${{ github.ref_name }}-macos-arm64.zip
 
   release:
     needs: [build-macos-intel, build-macos-arm]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+
+      - name: Download Intel build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-intel-build
+          path: ./build/
+
+      - name: Download ARM build artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: macos-arm-build
+          path: ./build/
 
       - name: Install GitHub CLI
         run: sudo apt-get update && sudo apt-get install -y gh
