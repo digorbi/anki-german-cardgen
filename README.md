@@ -28,7 +28,7 @@ With an error like:
 
 > `"cannot be opened because the developer cannot be verified"`
 
-To bypass this (only if you understand the risks):
+Since the project is still in its early stages, there's a temporary workaround to bypass this issue (**⚠️ only if you understand the security risks**):
 
 ```bash
 # This disables macOS security checks for the plugin’s native files.
