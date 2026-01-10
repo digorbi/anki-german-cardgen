@@ -98,7 +98,7 @@ Use the following automation:
 
 ```bash
 # Deploy plugin to Anki
-./scripts/deploy.sh 
+python scripts/deploy.py
 ```
 
 - Restart Anki
