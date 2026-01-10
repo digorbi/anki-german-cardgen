@@ -89,5 +89,6 @@ def generate_card() -> None:
             continue
 
 action = QAction("German Card", mw)
+action.setShortcut("Ctrl+Shift+G")
 action.triggered.connect(generate_card)
 mw.form.menuTools.addAction(action)
