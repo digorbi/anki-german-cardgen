@@ -7,9 +7,10 @@ markers = [
 [tool.mypy]
 exclude = "^plugin/vendor/|scripts/|tests/"
 strict = true
+python_version = "3.13"
 
 [tool.ruff]
-target-version = "py39"
+target-version = "py313"
 line-length = 88
 exclude = ["plugin/vendor", "scripts"]
 

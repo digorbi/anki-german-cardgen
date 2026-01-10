@@ -17,23 +17,12 @@ This project aims to streamline the creation of high-quality German vocabulary c
 - Unzip it into your Anki add-ons folder: `~/Library/Application Support/Anki2/addons21/`
 - After unzipping, the structure should look like: `~/Library/Application Support/Anki2/addons21/anki-german-cardgen/`
 
-### ⚠️ macOS native dependency issue
+### No native dependency requirement
 
-macOS may block native dependencies like:
-
-- `_pydantic_core.cpython-39-darwin.so`
-- `jiter.cpython-39-darwin.so`
-
-With an error like:
-
-> `"cannot be opened because the developer cannot be verified"`
-
-Since the project is still in its early stages, there's a temporary workaround to bypass this issue (**⚠️ only if you understand the security risks**):
-
-```bash
-# This disables macOS security checks for the plugin’s native files.
-sudo xattr -rd com.apple.quarantine ~/Library/Application\ Support/Anki2/addons21/anki-german-cardgen/vendor
-```
+The addon now uses a pure-Python HTTP client for OpenAI, so you should not see
+macOS quarantine errors from binary wheels. If you are upgrading from an older
+release that bundled native OpenAI dependencies, remove the old addon folder
+and reinstall the latest release.
 
 ---
 > 🚧 **This project is under active development.**

@@ -23,8 +23,8 @@ Pytest-based checks covering both the core and plugin layers.
 ## 🏗️ Setup
 
 ### Prerequisites
-- Python 3.9+
-- Anki Desktop 2.1+
+- Python 3.13.5+
+- Anki Desktop 25.09.2+
 - Virtual environment (recommended)
 
 ### Python setup
@@ -52,6 +52,28 @@ The project uses pytest for testing. To run the test suite:
 pytest
 ```
 
+### Integration Tests
+Integration tests are marked with `@pytest.mark.integration` and are skipped
+unless the required environment variables are set.
+
+- OpenAI integration: requires `OPENAI_API_KEY`
+- gTTS integration: requires `GTTS_ENABLED=true`
+
+Examples:
+
+```bash
+# Run only integration tests with OpenAI enabled
+OPENAI_API_KEY=sk-... pytest -m integration
+
+# Run only integration tests with gTTS enabled
+GTTS_ENABLED=true pytest -m integration
+
+# Run all integration tests
+OPENAI_API_KEY=sk-... GTTS_ENABLED=true pytest -m integration
+```
+
+These tests call external services and may incur cost or require network access.
+
 ### Linting & Static Analysis
 Code style and static analysis are enforced with [ruff](https://docs.astral.sh/ruff/) and [mypy](http://mypy-lang.org/). These checks run automatically in CI, but you can run them locally:
 
@@ -76,7 +98,7 @@ Use the following automation:
 
 ```bash
 # Deploy plugin to Anki
-./scripts/deploy.sh 
+python scripts/deploy.py
 ```
 
 - Restart Anki
@@ -91,8 +113,8 @@ If integration tests fail with Error code: 429 - "quota exceeded" error: you nee
 - Restart Anki after deployment
 - Check Tools → German Card Generator menu
 
-### Plugin Carashes in Anki with an error `The 'openai' package is missing. Please ensure the addon was bundled correctly.`
+### Plugin crashes in Anki with a "package is missing" error
 - Install dependencies into the `plugin/vendor` folder using: `./scripts/bundle.py`
 
 ### Binary dependency errors (e.g. `No module named 'pydantic_core._pydantic_core'`). 
-- Make sure to bundle dependencies using **Python 3.9** (the same version as Anki). Use `pyenv local 3.9.21` and create your venv with that version before running the bundle script. The `.so` files in `vendor` must match Anki's Python version.
+- Make sure to bundle dependencies using the same Python version as your Anki build. The `.so` files in `vendor` must match Anki's Python version.
