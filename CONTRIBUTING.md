@@ -23,8 +23,8 @@ Pytest-based checks covering both the core and plugin layers.
 ## 🏗️ Setup
 
 ### Prerequisites
-- Python 3.9+
-- Anki Desktop 2.1+
+- Python 3.13.5+
+- Anki Desktop 25.09.2+
 - Virtual environment (recommended)
 
 ### Python setup
