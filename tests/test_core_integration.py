@@ -11,17 +11,14 @@ from core.gtts_audio_provider import GttsAudioProvider
 from core.openai_vocab_provider import OpenaiVocabProvider
 from core.vocab_provider import VocabItem
 
-# Import the real OpenAI client for testing
-try:
-    import openai
-except ImportError:
-    pytest.skip("OpenAI package not installed - skipping integration test")
-
 # Import gTTS for audio integration testing
 try:
     from gtts import gTTS  # noqa: F401
 except ImportError:
-    pytest.skip("gTTS package not installed - skipping integration test")
+    pytest.skip(
+        "gTTS package not installed - skipping integration test",
+        allow_module_level=True,
+    )
 
 
 class DummyProvider:
@@ -61,7 +58,6 @@ def test_german_card_openai_integration():
         vocab_provider = OpenaiVocabProvider(
             api_key=api_key,
             target_language="English",
-            openai_client=openai
         )
 
         # Create GermanCard using the real provider
